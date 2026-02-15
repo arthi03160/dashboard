@@ -120,7 +120,6 @@
             var now = new Date();
             var h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
             
-            // Vérification de l'alarme à la seconde 0 pour éviter de redéclencher en boucle pendant la minute
             if (alarmActive && h == alarmH && m == alarmM && s == 0 && !isRinging) { 
                 startRinging(); 
             }
@@ -159,9 +158,14 @@
             if (audioCtx.state === 'suspended') { audioCtx.resume(); }
             var osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
             osc.connect(gain); gain.connect(audioCtx.destination);
-            osc.type = "square";
+            
+            osc.type = "triangle"; // Son plus doux
             osc.frequency.value = freq;
-            gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+            
+            gain.gain.setValueAtTime(0, audioCtx.currentTime);
+            gain.gain.linearRampToValueAtTime(0.4, audioCtx.currentTime + 0.1);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+            
             osc.start(); osc.stop(audioCtx.currentTime + duration);
         }
 
@@ -169,17 +173,18 @@
             isRinging = true;
             document.getElementById('stop-btn').style.display = "block";
             melodyInterval = setInterval(function() {
-                playNote(880, 0.15);
-                setTimeout(function(){ playNote(1100, 0.15); }, 200);
-            }, 500);
+                playNote(659.25, 0.4); // Note MI
+                setTimeout(function(){ 
+                    if(isRinging) playNote(783.99, 0.4); // Note SOL
+                }, 400);
+            }, 1200);
         }
 
         function stopAlarmNow() {
             isRinging = false;
-            // ON NE PASSE PLUS alarmActive à false ICI
             clearInterval(melodyInterval);
             document.getElementById('stop-btn').style.display = "none";
-            document.getElementById('al-status').innerHTML = "RESTE ACTIVE POUR DEMAIN";
+            document.getElementById('al-status').innerHTML = "ACTIVE POUR DEMAIN";
         }
 
         function showPage(n) {
