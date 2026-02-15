@@ -35,7 +35,6 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* Alarme UI */
         .alarm-ui { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 20px; width: 75%; }
         input[type="number"] {
             background: #222; border: 1px solid #444; color: #fff;
@@ -49,14 +48,12 @@
         .alarm-off { background: #333; color: #777; }
         .alarm-on { background: #27ae60; color: #fff; }
         
-        /* Bouton STOP d'urgence */
         #stop-btn { 
             display: none; background: #e74c3c; color: #fff; font-size: 20px; 
             padding: 20px; width: 100%; position: fixed; bottom: 0; left:0; 
             z-index: 2000; border: none; font-family: 'Archivo Black', sans-serif;
         }
 
-        /* Barre de navigation basse */
         #nav-bar {
             position: fixed; bottom: 0; width: 100%; height: 44px;
             display: flex; justify-content: space-between; align-items: center;
@@ -131,12 +128,23 @@
 
         function toggleAlarm() {
             var btn = document.getElementById('al-btn'), status = document.getElementById('al-status');
+            
+            // INITIALISATION AUDIO (Crucial pour iOS 9)
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                // Joue un son silencieux immédiatement pour débloquer le haut-parleur
+                var buffer = audioCtx.createBuffer(1, 1, 22050);
+                var source = audioCtx.createBufferSource();
+                source.buffer = buffer;
+                source.connect(audioCtx.destination);
+                source.start(0);
+            }
+
             if (!alarmActive) {
                 alarmH = parseInt(document.getElementById('al-h').value);
                 alarmM = parseInt(document.getElementById('al-m').value);
                 alarmActive = true; btn.innerHTML = "ON"; btn.className = "btn-alarm alarm-on";
                 status.innerHTML = "SONNERA À " + (alarmH < 10 ? "0"+alarmH : alarmH) + ":" + (alarmM < 10 ? "0"+alarmM : alarmM);
-                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             } else {
                 alarmActive = false; btn.innerHTML = "OFF"; btn.className = "btn-alarm alarm-off"; status.innerHTML = "DÉSACTIVÉE";
             }
@@ -144,20 +152,25 @@
 
         function playNote(freq, duration) {
             if(!audioCtx) return;
+            // On s'assure que le contexte n'est pas suspendu
+            if (audioCtx.state === 'suspended') { audioCtx.resume(); }
+            
             var osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
             osc.connect(gain); gain.connect(audioCtx.destination);
-            osc.type = "sine"; osc.frequency.value = freq;
-            gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+            osc.type = "square"; // "square" est plus fort que "sine" pour le 4S
+            osc.frequency.value = freq;
+            gain.gain.setValueAtTime(0.3, audioCtx.currentTime); // Volume à 30%
             osc.start(); osc.stop(audioCtx.currentTime + duration);
         }
 
         function startRinging() {
             isRinging = true;
             document.getElementById('stop-btn').style.display = "block";
+            // Mélodie simplifiée et plus percutante
             melodyInterval = setInterval(function() {
-                playNote(440, 0.2);
-                setTimeout(function(){ playNote(659, 0.2); }, 200);
-            }, 600);
+                playNote(880, 0.15);
+                setTimeout(function(){ playNote(1100, 0.15); }, 200);
+            }, 500);
         }
 
         function stopAlarmNow() {
