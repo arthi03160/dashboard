@@ -10,48 +10,46 @@
     <style>
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
-            background: #0d1217; /* Fond uni au cas où le dégradé rame */
+            background: #050505;
             background: radial-gradient(circle at center, #1a2a3a 0%, #0d1217 70%, #050505 100%);
-            color: #ffffff; font-family: 'Archivo Black', sans-serif; overflow: hidden;
+            color: #ffffff; font-family: 'Archivo Black', Arial, sans-serif; 
+            overflow: hidden; touch-action: none;
         }
-        #wrapper { display: block; width: 100%; height: 100%; position: relative; }
+        #wrapper { width: 100%; height: 100%; position: relative; }
         .page { 
             position: absolute; width: 100%; height: 100%; 
             display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; 
         }
         .active-page { display: flex !important; }
 
-        /* Page 1 : Horloge */
-        #clock { font-size: 80px; line-height: 1; text-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        #clock { font-size: 80px; line-height: 1; text-shadow: 0 4px 10px rgba(0,0,0,0.5); font-weight: bold; }
         #date { font-size: 16px; color: #a0aab4; margin-top: 10px; text-transform: uppercase; }
 
-        /* Page 2 : Météo */
-        .widget-grid { width: 92%; margin: 0 auto; }
+        .widget-grid { width: 90%; margin: 0 auto; }
         .widget {
             background: rgba(255, 255, 255, 0.08);
             border-radius: 15px; padding: 10px; margin-bottom: 8px;
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .emoji-icon { font-size: 32px; }
-        .temp-now { font-size: 30px; }
+        .emoji-icon { font-size: 32px; display: inline-block; }
+        .temp-now { font-size: 30px; display: inline-block; vertical-align: middle; }
         .widget-label { font-size: 9px; color: #888; text-transform: uppercase; }
         .precip-val { font-size: 18px; color: #3498db; }
 
         .forecast-list { display: table; width: 100%; margin-top: 5px; }
-        .f-day { display: table-cell; font-size: 9px; color: #aaa; text-align: center; }
+        .f-day { display: table-cell; font-size: 9px; color: #aaa; text-align: center; width: 25%; }
         .f-day b { display: block; font-size: 12px; color: #fff; }
 
         #dots { position: fixed; bottom: 8px; width: 100%; text-align: center; }
         .dot { display: inline-block; width: 7px; height: 7px; background: rgba(255,255,255,0.2); border-radius: 50%; margin: 0 4px; }
         .dot-active { background: #3498db !important; }
-        .city-tag { font-size: 8px; color: #444; margin-top: 5px; }
     </style>
 </head>
 <body onclick="togglePage()">
 
     <div id="wrapper">
         <div class="page active-page" id="p1">
-            <div id="clock">00:00</div>
+            <div id="clock">--:--</div>
             <div id="date">CHARGEMENT...</div>
         </div>
 
@@ -63,14 +61,13 @@
                     <span class="temp-now" id="temp">--°</span>
                 </div>
                 <div class="widget">
-                    <span class="widget-label">Pluie</span><br>
-                    <span class="precip-val" id="precip">0%</span>
+                    <span class="widget-label">Précipitations</span><br>
+                    <span class="precip-val" id="precip">--%</span>
                 </div>
                 <div class="widget">
                     <div class="forecast-list" id="forecast"></div>
                 </div>
             </div>
-            <div class="city-tag">CASTANET-TOLOSAN</div>
         </div>
     </div>
 
@@ -79,24 +76,25 @@
         <div class="dot" id="d2"></div>
     </div>
 
-    <script>
-        // Version compatible iOS 9 (ES5 uniquement)
+    <script type="text/javascript">
+        // Fonction pour mettre à jour l'horloge
         function updateClock() {
             var now = new Date();
             var h = now.getHours();
             var m = now.getMinutes();
             if (h < 10) h = "0" + h;
             if (m < 10) m = "0" + m;
-            document.getElementById('clock').innerHTML = h + ":" + m;
             
-            // Format de date simplifié pour vieux Safari
+            var clockEl = document.getElementById('clock');
+            if(clockEl) clockEl.innerHTML = h + ":" + m;
+            
             var jours = ["DIM", "LUN", "MAR", "MER", "JEU", "VEN", "SAM"];
             var mois = ["JAN", "FEV", "MAR", "AVR", "MAI", "JUIN", "JUIL", "AOUT", "SEPT", "OCT", "NOV", "DEC"];
             var dateStr = jours[now.getDay()] + " " + now.getDate() + " " + mois[now.getMonth()];
-            document.getElementById('date').innerHTML = dateStr;
+            
+            var dateEl = document.getElementById('date');
+            if(dateEl) dateEl.innerHTML = dateStr;
         }
-        setInterval(updateClock, 1000);
-        updateClock();
 
         var currentPage = 1;
         function togglePage() {
@@ -122,7 +120,8 @@
 
         function getMeteo() {
             var xhr = new XMLHttpRequest();
-            xhr.open('GET', 'https://api.open-meteo.com/v1/forecast?latitude=43.5157&longitude=1.5159&daily=temperature_2m_max,weathercode,precipitation_probability_max&current_weather=true&timezone=Europe%2FParis', true);
+            var url = 'https://api.open-meteo.com/v1/forecast?latitude=43.5157&longitude=1.5159&daily=temperature_2m_max,weathercode,precipitation_probability_max&current_weather=true&timezone=Europe%2FParis';
+            xhr.open('GET', url, true);
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4 && xhr.status === 200) {
                     var data = JSON.parse(xhr.responseText);
@@ -148,8 +147,14 @@
             };
             xhr.send();
         }
-        getMeteo();
-        setInterval(getMeteo, 600000);
+
+        // Lancement immédiat et répétition
+        window.onload = function() {
+            updateClock();
+            getMeteo();
+            setInterval(updateClock, 1000);
+            setInterval(getMeteo, 600000);
+        };
     </script>
 </body>
 </html>
