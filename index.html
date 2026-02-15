@@ -6,44 +6,37 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
-    <title>StandBy 4S Melodie Fix</title>
+    <title>StandBy 4S Final</title>
     <style>
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
             background: #050505;
             background: radial-gradient(circle at center, #1a2a3a 0%, #0d1217 70%, #050505 100%);
             color: #ffffff; font-family: 'Archivo Black', Arial, sans-serif; 
-            overflow: hidden; touch-action: none;
+            overflow: hidden;
         }
         
-        /* Navigation corrigée : on réduit la largeur pour ne pas gêner les inputs de l'alarme */
-        #nav-left, #nav-right { 
-            position: absolute; width: 15%; height: 100%; z-index: 500; top: 0;
-            background: rgba(0,0,0,0); /* Invisible mais présent */
-        }
-        #nav-left { left: 0; } 
-        #nav-right { right: 0; }
-
-        #wrapper { width: 100%; height: 100%; position: relative; z-index: 10; }
+        #wrapper { width: 100%; height: 100%; position: relative; }
         
         .page { 
             position: absolute; width: 100%; height: 100%; 
             display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; 
             top: -2000px; left: -2000px;
         }
-        .active-page { display: flex !important; top: 0 !important; left: 0 !important; z-index: 20; }
+        .active-page { display: flex !important; top: 0 !important; left: 0 !important; z-index: 10; }
 
         #clock { font-size: 80px; line-height: 1; text-shadow: 0 4px 10px rgba(0,0,0,0.5); }
         #date { font-size: 16px; color: #a0aab4; margin-top: 10px; text-transform: uppercase; }
 
-        .widget-grid { width: 80%; margin: 0 auto; }
+        .widget-grid { width: 85%; margin: 0 auto; }
         .widget {
             background: rgba(255, 255, 255, 0.08);
             border-radius: 15px; padding: 10px; margin-bottom: 8px;
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .alarm-ui { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 20px; width: 70%; z-index: 100; }
+        /* Alarme UI */
+        .alarm-ui { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 20px; width: 75%; }
         input[type="number"] {
             background: #222; border: 1px solid #444; color: #fff;
             font-size: 24px; width: 50px; text-align: center; border-radius: 8px; padding: 5px;
@@ -54,28 +47,32 @@
             font-family: 'Archivo Black', sans-serif; text-transform: uppercase; margin-top: 10px;
         }
         .alarm-off { background: #333; color: #777; }
-        .alarm-on { background: #27ae60; color: #fff; box-shadow: 0 0 15px #27ae60; }
+        .alarm-on { background: #27ae60; color: #fff; }
         
-        /* FIX DU BOUTON STOP : pointer-events none quand caché */
-        .btn-stop { 
-            background: #e74c3c; color: #fff; display: none; font-size: 20px; 
+        /* Bouton STOP d'urgence */
+        #stop-btn { 
+            display: none; background: #e74c3c; color: #fff; font-size: 20px; 
             padding: 20px; width: 100%; position: fixed; bottom: 0; left:0; 
             z-index: 2000; border: none; font-family: 'Archivo Black', sans-serif;
-            pointer-events: none; 
         }
-        .btn-stop.ringing { display: block; pointer-events: auto; }
 
+        /* Barre de navigation basse */
+        #nav-bar {
+            position: fixed; bottom: 0; width: 100%; height: 44px;
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 500; background: linear-gradient(to top, rgba(0,0,0,0.5), transparent);
+        }
+        .nav-arrow {
+            width: 60px; height: 100%; display: flex; align-items: center; justify-content: center;
+            font-size: 24px; color: rgba(255,255,255,0.3); font-weight: bold;
+        }
         .dot { display: inline-block; width: 6px; height: 6px; background: rgba(255,255,255,0.2); border-radius: 50%; margin: 0 4px; }
         .dot-active { background: #3498db !important; }
-        #dots { position: fixed; bottom: 8px; width: 100%; text-align: center; z-index: 100; }
     </style>
 </head>
 <body>
 
-    <div id="nav-left"></div>
-    <div id="nav-right"></div>
-    
-    <button id="stop-btn" class="btn-stop" onclick="stopAlarmNow()">ARRÊTER L'ALARME</button>
+    <button id="stop-btn" onclick="stopAlarmNow()">ARRÊTER L'ALARME</button>
 
     <div id="wrapper">
         <div class="page active-page" id="p1">
@@ -90,7 +87,6 @@
                     <span style="font-size:30px" id="temp">--°</span>
                 </div>
                 <div class="widget">
-                    <span style="font-size:9px; color:#888">PLUIE</span><br>
                     <span style="font-size:18px; color:#3498db" id="precip">--%</span>
                 </div>
                 <div class="widget" id="forecast"></div>
@@ -99,7 +95,6 @@
 
         <div class="page" id="p3">
             <div class="alarm-ui">
-                <span style="font-size:10px; color:#888">RÉVEIL</span>
                 <div style="margin: 10px 0;">
                     <input type="number" id="al-h" value="07" min="0" max="23"> : 
                     <input type="number" id="al-m" value="00" min="0" max="59">
@@ -110,8 +105,14 @@
         </div>
     </div>
 
-    <div id="dots">
-        <div class="dot dot-active" id="d1"></div><div class="dot" id="d2"></div><div class="dot" id="d3"></div>
+    <div id="nav-bar">
+        <div class="nav-arrow" onclick="prevPage()">‹</div>
+        <div id="dots">
+            <div class="dot dot-active" id="d1"></div>
+            <div class="dot" id="d2"></div>
+            <div class="dot" id="d3"></div>
+        </div>
+        <div class="nav-arrow" onclick="nextPage()">›</div>
     </div>
 
     <script type="text/javascript">
@@ -146,29 +147,23 @@
             var osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
             osc.connect(gain); gain.connect(audioCtx.destination);
             osc.type = "sine"; osc.frequency.value = freq;
-            gain.gain.setValueAtTime(0, audioCtx.currentTime);
-            gain.gain.linearRampToValueAtTime(0.2, audioCtx.currentTime + 0.05);
-            gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + duration);
+            gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
             osc.start(); osc.stop(audioCtx.currentTime + duration);
         }
 
         function startRinging() {
             isRinging = true;
-            var stopBtn = document.getElementById('stop-btn');
-            stopBtn.className = "btn-stop ringing"; 
-            var notes = [440, 554, 659, 880];
-            var i = 0;
+            document.getElementById('stop-btn').style.display = "block";
             melodyInterval = setInterval(function() {
-                playNote(notes[i % 4], 0.3);
-                i++;
-            }, 400);
+                playNote(440, 0.2);
+                setTimeout(function(){ playNote(659, 0.2); }, 200);
+            }, 600);
         }
 
         function stopAlarmNow() {
             isRinging = false; alarmActive = false;
             clearInterval(melodyInterval);
-            var stopBtn = document.getElementById('stop-btn');
-            stopBtn.className = "btn-stop";
+            document.getElementById('stop-btn').style.display = "none";
             document.getElementById('al-btn').innerHTML = "OFF";
             document.getElementById('al-btn').className = "btn-alarm alarm-off";
             document.getElementById('al-status').innerHTML = "ALARME ARRÊTÉE";
@@ -191,7 +186,7 @@
                 if (xhr.readyState === 4 && xhr.status === 200) {
                     var data = JSON.parse(xhr.responseText);
                     document.getElementById('temp').innerHTML = Math.round(data.current_weather.temperature) + "°";
-                    document.getElementById('precip').innerHTML = data.daily.precipitation_probability_max[0] + "%";
+                    document.getElementById('precip').innerHTML = "PLUIE: " + data.daily.precipitation_probability_max[0] + "%";
                     var daysArr = ["DIM", "LUN", "MAR", "MER", "JEU", "VEN", "SAM"], html = "<div style='display:table; width:100%'>";
                     for(var i=1; i<=4; i++) {
                         var d = new Date(); d.setDate(d.getDate() + i);
@@ -204,13 +199,6 @@
 
         window.onload = function() {
             updateClock(); getMeteo(); setInterval(updateClock, 1000); setInterval(getMeteo, 600000);
-            
-            // Correction navigation tactile
-            document.getElementById('nav-right').addEventListener('touchend', function(e){ e.preventDefault(); nextPage(); }, false);
-            document.getElementById('nav-left').addEventListener('touchend', function(e){ e.preventDefault(); prevPage(); }, false);
-            // Support clic souris pour test ordi
-            document.getElementById('nav-right').addEventListener('click', nextPage);
-            document.getElementById('nav-left').addEventListener('click', prevPage);
         };
     </script>
 </body>
