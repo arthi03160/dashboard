@@ -6,7 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
-    <title>StandBy 4S Final Sound</title>
+    <title>StandBy 4S Final</title>
     <style>
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
@@ -15,35 +15,59 @@
             color: #ffffff; font-family: 'Archivo Black', Arial, sans-serif; 
             overflow: hidden;
         }
+        
         #wrapper { width: 100%; height: 100%; position: relative; }
+        
         .page { 
             position: absolute; width: 100%; height: 100%; 
             display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; 
             top: -2000px; left: -2000px;
         }
         .active-page { display: flex !important; top: 0 !important; left: 0 !important; z-index: 10; }
+
         #clock { font-size: 80px; line-height: 1; text-shadow: 0 4px 10px rgba(0,0,0,0.5); }
         #date { font-size: 16px; color: #a0aab4; margin-top: 10px; text-transform: uppercase; }
+
         .widget-grid { width: 85%; margin: 0 auto; }
-        .widget { background: rgba(255, 255, 255, 0.08); border-radius: 15px; padding: 10px; margin-bottom: 8px; border: 1px solid rgba(255, 255, 255, 0.1); }
+        .widget {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px; padding: 10px; margin-bottom: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
         .alarm-ui { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 20px; width: 75%; }
-        input[type="number"] { background: #222; border: 1px solid #444; color: #fff; font-size: 24px; width: 50px; text-align: center; border-radius: 8px; padding: 5px; font-family: 'Archivo Black', sans-serif; }
-        .btn-alarm { padding: 10px 20px; border-radius: 10px; border: none; font-size: 12px; font-family: 'Archivo Black', sans-serif; text-transform: uppercase; margin-top: 10px; }
+        input[type="number"] {
+            background: #222; border: 1px solid #444; color: #fff;
+            font-size: 24px; width: 50px; text-align: center; border-radius: 8px; padding: 5px;
+            font-family: 'Archivo Black', sans-serif;
+        }
+        .btn-alarm {
+            padding: 10px 20px; border-radius: 10px; border: none; font-size: 12px;
+            font-family: 'Archivo Black', sans-serif; text-transform: uppercase; margin-top: 10px;
+        }
         .alarm-off { background: #333; color: #777; }
         .alarm-on { background: #27ae60; color: #fff; }
-        #stop-btn { display: none; background: #e74c3c; color: #fff; font-size: 20px; padding: 20px; width: 100%; position: fixed; bottom: 0; left:0; z-index: 2000; border: none; font-family: 'Archivo Black', sans-serif; }
-        #nav-bar { position: fixed; bottom: 0; width: 100%; height: 44px; display: flex; justify-content: space-between; align-items: center; z-index: 500; background: linear-gradient(to top, rgba(0,0,0,0.5), transparent); }
-        .nav-arrow { width: 60px; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 24px; color: rgba(255,255,255,0.3); }
+        
+        #stop-btn { 
+            display: none; background: #e74c3c; color: #fff; font-size: 20px; 
+            padding: 20px; width: 100%; position: fixed; bottom: 0; left:0; 
+            z-index: 2000; border: none; font-family: 'Archivo Black', sans-serif;
+        }
+
+        #nav-bar {
+            position: fixed; bottom: 0; width: 100%; height: 44px;
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 500; background: linear-gradient(to top, rgba(0,0,0,0.5), transparent);
+        }
+        .nav-arrow {
+            width: 60px; height: 100%; display: flex; align-items: center; justify-content: center;
+            font-size: 24px; color: rgba(255,255,255,0.3); font-weight: bold;
+        }
         .dot { display: inline-block; width: 6px; height: 6px; background: rgba(255,255,255,0.2); border-radius: 50%; margin: 0 4px; }
         .dot-active { background: #3498db !important; }
     </style>
 </head>
 <body>
-
-    <audio id="alarm-sound" loop>
-        <source src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" type="audio/ogg">
-        <source src="https://cdn.pixabay.com/audio/2022/03/24/audio_347395e87a.mp3" type="audio/mpeg">
-    </audio>
 
     <button id="stop-btn" onclick="stopAlarmNow()">ARRÊTER L'ALARME</button>
 
@@ -52,17 +76,26 @@
             <div id="clock">--:--</div>
             <div id="date">CHARGEMENT...</div>
         </div>
+
         <div class="page" id="p2">
             <div class="widget-grid">
-                <div class="widget">☀️ <span id="temp">--°</span></div>
-                <div class="widget" id="precip">--%</div>
+                <div class="widget">
+                    <span id="emoji-main" style="font-size:32px">☀️</span>
+                    <span style="font-size:30px" id="temp">--°</span>
+                </div>
+                <div class="widget">
+                    <span style="font-size:18px; color:#3498db" id="precip">--%</span>
+                </div>
                 <div class="widget" id="forecast"></div>
             </div>
         </div>
+
         <div class="page" id="p3">
             <div class="alarm-ui">
-                <input type="number" id="al-h" value="07"> : <input type="number" id="al-m" value="00">
-                <br>
+                <div style="margin: 10px 0;">
+                    <input type="number" id="al-h" value="07" min="0" max="23"> : 
+                    <input type="number" id="al-m" value="00" min="0" max="59">
+                </div>
                 <button id="al-btn" class="btn-alarm alarm-off" onclick="toggleAlarm()">OFF</button>
             </div>
             <div id="al-status" style="font-size:10px; margin-top:10px; color:#555">DÉSACTIVÉE</div>
@@ -80,13 +113,13 @@
     </div>
 
     <script type="text/javascript">
-        var currentPage = 1, alarmH = -1, alarmM = -1, alarmActive = false;
-        var audio = document.getElementById('alarm-sound');
+        var currentPage = 1, alarmH = -1, alarmM = -1, alarmActive = false, isRinging = false;
+        var audioCtx = null, melodyInterval = null;
 
         function updateClock() {
             var now = new Date();
             var h = now.getHours(), m = now.getMinutes();
-            if (alarmActive && h == alarmH && m == alarmM) { startRinging(); }
+            if (alarmActive && h == alarmH && m == alarmM && !isRinging) { startRinging(); }
             if (h < 10) h = "0" + h; if (m < 10) m = "0" + m;
             document.getElementById('clock').innerHTML = h + ":" + m;
             var jours = ["DIM", "LUN", "MAR", "MER", "JEU", "VEN", "SAM"], mois = ["JAN", "FEV", "MAR", "AVR", "MAI", "JUIN", "JUIL", "AOUT", "SEPT", "OCT", "NOV", "DEC"];
@@ -94,39 +127,59 @@
         }
 
         function toggleAlarm() {
-            var btn = document.getElementById('al-btn');
+            var btn = document.getElementById('al-btn'), status = document.getElementById('al-status');
+            
+            // INITIALISATION AUDIO (Crucial pour iOS 9)
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                // Joue un son silencieux immédiatement pour débloquer le haut-parleur
+                var buffer = audioCtx.createBuffer(1, 1, 22050);
+                var source = audioCtx.createBufferSource();
+                source.buffer = buffer;
+                source.connect(audioCtx.destination);
+                source.start(0);
+            }
+
             if (!alarmActive) {
                 alarmH = parseInt(document.getElementById('al-h').value);
                 alarmM = parseInt(document.getElementById('al-m').value);
-                alarmActive = true;
-                btn.innerHTML = "ON"; btn.className = "btn-alarm alarm-on";
-                document.getElementById('al-status').innerHTML = "SONNERA À " + alarmH + ":" + alarmM;
-                
-                // CRUCIAL : On pré-lance le son et on le met en pause tout de suite
-                // C'est la seule façon pour iOS 9 de valider l'audio
-                audio.play();
-                audio.pause();
-                audio.currentTime = 0;
+                alarmActive = true; btn.innerHTML = "ON"; btn.className = "btn-alarm alarm-on";
+                status.innerHTML = "SONNERA À " + (alarmH < 10 ? "0"+alarmH : alarmH) + ":" + (alarmM < 10 ? "0"+alarmM : alarmM);
             } else {
-                alarmActive = false;
-                btn.innerHTML = "OFF"; btn.className = "btn-alarm alarm-off";
-                document.getElementById('al-status').innerHTML = "DÉSACTIVÉE";
-                audio.pause();
+                alarmActive = false; btn.innerHTML = "OFF"; btn.className = "btn-alarm alarm-off"; status.innerHTML = "DÉSACTIVÉE";
             }
         }
 
+        function playNote(freq, duration) {
+            if(!audioCtx) return;
+            // On s'assure que le contexte n'est pas suspendu
+            if (audioCtx.state === 'suspended') { audioCtx.resume(); }
+            
+            var osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.type = "square"; // "square" est plus fort que "sine" pour le 4S
+            osc.frequency.value = freq;
+            gain.gain.setValueAtTime(0.3, audioCtx.currentTime); // Volume à 30%
+            osc.start(); osc.stop(audioCtx.currentTime + duration);
+        }
+
         function startRinging() {
+            isRinging = true;
             document.getElementById('stop-btn').style.display = "block";
-            audio.play();
+            // Mélodie simplifiée et plus percutante
+            melodyInterval = setInterval(function() {
+                playNote(880, 0.15);
+                setTimeout(function(){ playNote(1100, 0.15); }, 200);
+            }, 500);
         }
 
         function stopAlarmNow() {
-            alarmActive = false;
-            audio.pause();
-            audio.currentTime = 0;
+            isRinging = false; alarmActive = false;
+            clearInterval(melodyInterval);
             document.getElementById('stop-btn').style.display = "none";
             document.getElementById('al-btn').innerHTML = "OFF";
             document.getElementById('al-btn').className = "btn-alarm alarm-off";
+            document.getElementById('al-status').innerHTML = "ALARME ARRÊTÉE";
         }
 
         function showPage(n) {
@@ -147,6 +200,12 @@
                     var data = JSON.parse(xhr.responseText);
                     document.getElementById('temp').innerHTML = Math.round(data.current_weather.temperature) + "°";
                     document.getElementById('precip').innerHTML = "PLUIE: " + data.daily.precipitation_probability_max[0] + "%";
+                    var daysArr = ["DIM", "LUN", "MAR", "MER", "JEU", "VEN", "SAM"], html = "<div style='display:table; width:100%'>";
+                    for(var i=1; i<=4; i++) {
+                        var d = new Date(); d.setDate(d.getDate() + i);
+                        html += "<div style='display:table-cell; font-size:9px; color:#aaa'>"+daysArr[d.getDay()]+"<b style='display:block; color:#fff'>"+Math.round(data.daily.temperature_2m_max[i])+"°</b></div>";
+                    }
+                    document.getElementById('forecast').innerHTML = html + "</div>";
                 }
             }; xhr.send();
         }
