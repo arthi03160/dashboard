@@ -6,60 +6,74 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
-    <title>StandBy 4S Melodie</title>
+    <title>StandBy 4S Melodie Fix</title>
     <style>
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
             background: #050505;
             background: radial-gradient(circle at center, #1a2a3a 0%, #0d1217 70%, #050505 100%);
             color: #ffffff; font-family: 'Archivo Black', Arial, sans-serif; 
-            overflow: hidden;
+            overflow: hidden; touch-action: none;
         }
         
-        #nav-left, #nav-right { position: absolute; width: 20%; height: 80%; z-index: 999; top: 10%; }
-        #nav-left { left: 0; } #nav-right { right: 0; }
+        /* Navigation corrigée : on réduit la largeur pour ne pas gêner les inputs de l'alarme */
+        #nav-left, #nav-right { 
+            position: absolute; width: 15%; height: 100%; z-index: 500; top: 0;
+            background: rgba(0,0,0,0); /* Invisible mais présent */
+        }
+        #nav-left { left: 0; } 
+        #nav-right { right: 0; }
 
-        #wrapper { width: 100%; height: 100%; position: relative; }
+        #wrapper { width: 100%; height: 100%; position: relative; z-index: 10; }
+        
         .page { 
             position: absolute; width: 100%; height: 100%; 
             display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; 
             top: -2000px; left: -2000px;
         }
-        .active-page { display: flex !important; top: 0 !important; left: 0 !important; z-index: 10; }
+        .active-page { display: flex !important; top: 0 !important; left: 0 !important; z-index: 20; }
 
         #clock { font-size: 80px; line-height: 1; text-shadow: 0 4px 10px rgba(0,0,0,0.5); }
         #date { font-size: 16px; color: #a0aab4; margin-top: 10px; text-transform: uppercase; }
 
-        .widget-grid { width: 90%; margin: 0 auto; }
+        .widget-grid { width: 80%; margin: 0 auto; }
         .widget {
             background: rgba(255, 255, 255, 0.08);
             border-radius: 15px; padding: 10px; margin-bottom: 8px;
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .alarm-ui { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 20px; width: 80%; }
+        .alarm-ui { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 20px; width: 70%; z-index: 100; }
         input[type="number"] {
             background: #222; border: 1px solid #444; color: #fff;
-            font-size: 30px; width: 60px; text-align: center; border-radius: 10px; padding: 5px;
+            font-size: 24px; width: 50px; text-align: center; border-radius: 8px; padding: 5px;
             font-family: 'Archivo Black', sans-serif;
         }
         .btn-alarm {
-            padding: 12px 25px; border-radius: 12px; border: none; font-size: 14px;
+            padding: 10px 20px; border-radius: 10px; border: none; font-size: 12px;
             font-family: 'Archivo Black', sans-serif; text-transform: uppercase; margin-top: 10px;
         }
         .alarm-off { background: #333; color: #777; }
         .alarm-on { background: #27ae60; color: #fff; box-shadow: 0 0 15px #27ae60; }
-        .btn-stop { background: #e74c3c; color: #fff; display: none; font-size: 20px; padding: 20px; width: 100%; position: fixed; bottom: 0; z-index: 1000; }
+        
+        /* FIX DU BOUTON STOP : pointer-events none quand caché */
+        .btn-stop { 
+            background: #e74c3c; color: #fff; display: none; font-size: 20px; 
+            padding: 20px; width: 100%; position: fixed; bottom: 0; left:0; 
+            z-index: 2000; border: none; font-family: 'Archivo Black', sans-serif;
+            pointer-events: none; 
+        }
+        .btn-stop.ringing { display: block; pointer-events: auto; }
 
         .dot { display: inline-block; width: 6px; height: 6px; background: rgba(255,255,255,0.2); border-radius: 50%; margin: 0 4px; }
         .dot-active { background: #3498db !important; }
-        #dots { position: fixed; bottom: 8px; width: 100%; text-align: center; }
+        #dots { position: fixed; bottom: 8px; width: 100%; text-align: center; z-index: 100; }
     </style>
 </head>
 <body>
 
-    <div id="nav-left" onclick="prevPage()"></div>
-    <div id="nav-right" onclick="nextPage()"></div>
+    <div id="nav-left"></div>
+    <div id="nav-right"></div>
     
     <button id="stop-btn" class="btn-stop" onclick="stopAlarmNow()">ARRÊTER L'ALARME</button>
 
@@ -86,7 +100,7 @@
         <div class="page" id="p3">
             <div class="alarm-ui">
                 <span style="font-size:10px; color:#888">RÉVEIL</span>
-                <div style="margin: 15px 0;">
+                <div style="margin: 10px 0;">
                     <input type="number" id="al-h" value="07" min="0" max="23"> : 
                     <input type="number" id="al-m" value="00" min="0" max="59">
                 </div>
@@ -121,7 +135,6 @@
                 alarmM = parseInt(document.getElementById('al-m').value);
                 alarmActive = true; btn.innerHTML = "ON"; btn.className = "btn-alarm alarm-on";
                 status.innerHTML = "SONNERA À " + (alarmH < 10 ? "0"+alarmH : alarmH) + ":" + (alarmM < 10 ? "0"+alarmM : alarmM);
-                // On initialise l'audio sur un clic utilisateur (obligatoire iOS)
                 if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             } else {
                 alarmActive = false; btn.innerHTML = "OFF"; btn.className = "btn-alarm alarm-off"; status.innerHTML = "DÉSACTIVÉE";
@@ -141,8 +154,9 @@
 
         function startRinging() {
             isRinging = true;
-            document.getElementById('stop-btn').style.display = "block";
-            var notes = [440, 554, 659, 880]; // La, Do#, Mi, La (Arpège)
+            var stopBtn = document.getElementById('stop-btn');
+            stopBtn.className = "btn-stop ringing"; 
+            var notes = [440, 554, 659, 880];
             var i = 0;
             melodyInterval = setInterval(function() {
                 playNote(notes[i % 4], 0.3);
@@ -153,7 +167,8 @@
         function stopAlarmNow() {
             isRinging = false; alarmActive = false;
             clearInterval(melodyInterval);
-            document.getElementById('stop-btn').style.display = "none";
+            var stopBtn = document.getElementById('stop-btn');
+            stopBtn.className = "btn-stop";
             document.getElementById('al-btn').innerHTML = "OFF";
             document.getElementById('al-btn').className = "btn-alarm alarm-off";
             document.getElementById('al-status').innerHTML = "ALARME ARRÊTÉE";
@@ -189,8 +204,13 @@
 
         window.onload = function() {
             updateClock(); getMeteo(); setInterval(updateClock, 1000); setInterval(getMeteo, 600000);
+            
+            // Correction navigation tactile
             document.getElementById('nav-right').addEventListener('touchend', function(e){ e.preventDefault(); nextPage(); }, false);
             document.getElementById('nav-left').addEventListener('touchend', function(e){ e.preventDefault(); prevPage(); }, false);
+            // Support clic souris pour test ordi
+            document.getElementById('nav-right').addEventListener('click', nextPage);
+            document.getElementById('nav-left').addEventListener('click', prevPage);
         };
     </script>
 </body>
