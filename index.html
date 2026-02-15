@@ -69,7 +69,7 @@
 </head>
 <body>
 
-    <button id="stop-btn" onclick="stopAlarmNow()">ARRÊTER L'ALARME</button>
+    <button id="stop-btn" onclick="stopAlarmNow()">ARRÊTER LE SON</button>
 
     <div id="wrapper">
         <div class="page active-page" id="p1">
@@ -118,8 +118,13 @@
 
         function updateClock() {
             var now = new Date();
-            var h = now.getHours(), m = now.getMinutes();
-            if (alarmActive && h == alarmH && m == alarmM && !isRinging) { startRinging(); }
+            var h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
+            
+            // Vérification de l'alarme à la seconde 0 pour éviter de redéclencher en boucle pendant la minute
+            if (alarmActive && h == alarmH && m == alarmM && s == 0 && !isRinging) { 
+                startRinging(); 
+            }
+
             if (h < 10) h = "0" + h; if (m < 10) m = "0" + m;
             document.getElementById('clock').innerHTML = h + ":" + m;
             var jours = ["DIM", "LUN", "MAR", "MER", "JEU", "VEN", "SAM"], mois = ["JAN", "FEV", "MAR", "AVR", "MAI", "JUIN", "JUIL", "AOUT", "SEPT", "OCT", "NOV", "DEC"];
@@ -129,10 +134,8 @@
         function toggleAlarm() {
             var btn = document.getElementById('al-btn'), status = document.getElementById('al-status');
             
-            // INITIALISATION AUDIO (Crucial pour iOS 9)
             if (!audioCtx) {
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                // Joue un son silencieux immédiatement pour débloquer le haut-parleur
                 var buffer = audioCtx.createBuffer(1, 1, 22050);
                 var source = audioCtx.createBufferSource();
                 source.buffer = buffer;
@@ -144,29 +147,27 @@
                 alarmH = parseInt(document.getElementById('al-h').value);
                 alarmM = parseInt(document.getElementById('al-m').value);
                 alarmActive = true; btn.innerHTML = "ON"; btn.className = "btn-alarm alarm-on";
-                status.innerHTML = "SONNERA À " + (alarmH < 10 ? "0"+alarmH : alarmH) + ":" + (alarmM < 10 ? "0"+alarmM : alarmM);
+                status.innerHTML = "PROGRAMMÉE : " + (alarmH < 10 ? "0"+alarmH : alarmH) + ":" + (alarmM < 10 ? "0"+alarmM : alarmM);
             } else {
                 alarmActive = false; btn.innerHTML = "OFF"; btn.className = "btn-alarm alarm-off"; status.innerHTML = "DÉSACTIVÉE";
+                if(isRinging) stopAlarmNow();
             }
         }
 
         function playNote(freq, duration) {
             if(!audioCtx) return;
-            // On s'assure que le contexte n'est pas suspendu
             if (audioCtx.state === 'suspended') { audioCtx.resume(); }
-            
             var osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
             osc.connect(gain); gain.connect(audioCtx.destination);
-            osc.type = "square"; // "square" est plus fort que "sine" pour le 4S
+            osc.type = "square";
             osc.frequency.value = freq;
-            gain.gain.setValueAtTime(0.3, audioCtx.currentTime); // Volume à 30%
+            gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
             osc.start(); osc.stop(audioCtx.currentTime + duration);
         }
 
         function startRinging() {
             isRinging = true;
             document.getElementById('stop-btn').style.display = "block";
-            // Mélodie simplifiée et plus percutante
             melodyInterval = setInterval(function() {
                 playNote(880, 0.15);
                 setTimeout(function(){ playNote(1100, 0.15); }, 200);
@@ -174,12 +175,11 @@
         }
 
         function stopAlarmNow() {
-            isRinging = false; alarmActive = false;
+            isRinging = false;
+            // ON NE PASSE PLUS alarmActive à false ICI
             clearInterval(melodyInterval);
             document.getElementById('stop-btn').style.display = "none";
-            document.getElementById('al-btn').innerHTML = "OFF";
-            document.getElementById('al-btn').className = "btn-alarm alarm-off";
-            document.getElementById('al-status').innerHTML = "ALARME ARRÊTÉE";
+            document.getElementById('al-status').innerHTML = "RESTE ACTIVE POUR DEMAIN";
         }
 
         function showPage(n) {
