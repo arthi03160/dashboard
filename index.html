@@ -10,26 +10,23 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
     
-    <title>StandBy 4S - Absolute Fix</title>
+    <title>StandBy 4S - Zero Bug Edition</title>
     
     <style>
         /* =====================================================================
-           SECTION 1 : RESET & CORE
+           SECTION 1 : FONDATIONS
            =====================================================================
         */
         * {
-            margin: 0;
-            padding: 0;
+            margin: 0; padding: 0;
             -webkit-user-select: none;
             user-select: none;
             box-sizing: border-box;
-            /* Désactivation des reflets tactiles par défaut */
             -webkit-tap-highlight-color: rgba(0,0,0,0);
         }
 
         body, html {
-            width: 100%;
-            height: 100%;
+            width: 100%; height: 100%;
             background-color: #000;
             color: #ffffff;
             font-family: 'Archivo Black', Arial, sans-serif;
@@ -37,7 +34,6 @@
             position: fixed;
         }
 
-        /* Réactivation propre pour l'alarme */
         input { 
             -webkit-user-select: auto !important; 
             user-select: auto !important; 
@@ -46,184 +42,184 @@
         }
 
         /* =====================================================================
-           SECTION 2 : FOND DYNAMIQUE
+           SECTION 2 : ENGINE BACKGROUND
            =====================================================================
         */
         #dynamic-bg {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-size: cover;
-            background-position: center;
-            -webkit-transition: background-image 2s ease-in-out;
-            z-index: -1;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-size: cover; background-position: center;
+            -webkit-transition: background-image 2s ease; z-index: -1;
         }
 
         #bg-overlay {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.15);
-            z-index: 0;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.2); z-index: 0;
         }
 
         /* =====================================================================
-           SECTION 3 : L'HEURE RADIANT GLASS (VALIDÉE)
+           SECTION 3 : L'HEURE (AVEC POINTS RONDS)
            =====================================================================
         */
-        #clock {
-            font-size: 108px;
-            line-height: 1;
-            letter-spacing: -6px;
-            position: relative;
-            color: rgba(255, 255, 255, 0.45);
-            -webkit-text-stroke: 1.8px rgba(255, 255, 255, 0.85);
-            filter: drop-shadow(0px 0px 1px #fff)
-                    drop-shadow(0px 0px 12px rgba(255,255,255,0.4))
-                    drop-shadow(0px 8px 12px rgba(0,0,0,0.5));
-            -webkit-animation: radiant 5s infinite ease-in-out;
+        #clock-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
         }
 
-        @-webkit-keyframes radiant {
-            0%, 100% { -webkit-filter: brightness(1); }
-            50% { -webkit-filter: brightness(1.3); }
+        .time-part {
+            font-size: 108px;
+            letter-spacing: -4px;
+            color: rgba(255, 255, 255, 0.45);
+            -webkit-text-stroke: 1.8px rgba(255, 255, 255, 0.85);
+            filter: drop-shadow(0px 0px 10px rgba(255,255,255,0.3))
+                    drop-shadow(0px 8px 12px rgba(0,0,0,0.5));
+        }
+
+        /* LE SÉPARATEUR À DEUX RONDS */
+        .separator {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding: 0 10px;
+            margin-top: 10px;
+        }
+
+        .dot-sep {
+            width: 12px;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%; /* FORCE LE ROND */
+            box-shadow: 0 0 10px rgba(255,255,255,0.6);
+            -webkit-animation: pulseDots 2s infinite ease-in-out;
+        }
+
+        @-webkit-keyframes pulseDots {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
         }
 
         #date {
             font-size: 14px;
-            margin-top: 15px;
+            margin-top: 20px;
             text-transform: uppercase;
             letter-spacing: 3px;
-            background: rgba(255, 255, 255, 0.18);
-            padding: 7px 20px;
-            border-radius: 25px;
-            display: inline-block;
-            -webkit-backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 20px;
+            border-radius: 50px;
             border: 1px solid rgba(255, 255, 255, 0.3);
+            display: inline-block;
         }
 
         /* =====================================================================
-           SECTION 4 : WIDGETS - LE FIX RADICAL DES COINS
+           SECTION 4 : WIDGETS (SANS AUCUN SHADOW - ADIEU LES ANGLES)
            =====================================================================
         */
         .widget-box {
             position: relative;
             width: 92%;
             margin-bottom: 12px;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.12);
-            border-radius: 25px;
+            padding: 22px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 30px;
+            border: 1.5px solid rgba(255, 255, 255, 0.3);
             
-            /* 1. ON SUPPRIME TOUTE OMBRE EXTERNE ET INTERNE */
+            /* ON DÉSACTIVE LE FLOU COMPLEXE ET L'OMBRE QUI CAUSENT LE BUG */
             box-shadow: none !important;
-            
-            /* 2. ON FORCE LE DÉCOUPAGE PHYSIQUE DU WIDGET (WebKit Fix) */
-            -webkit-mask-image: -webkit-radial-gradient(white, black); 
             overflow: hidden;
-
-            /* 3. BORDURE UNIQUE POUR LE RELIEF */
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            -webkit-backdrop-filter: blur(18px);
+            text-align: center;
         }
 
-        /* Ajout d'une lueur subtile via une bordure invisible */
+        /* Simulation de profondeur sans box-shadow */
         .widget-box::before {
             content: "";
             position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            border-radius: 25px;
-            border: 1px solid rgba(255,255,255,0.1);
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            border-radius: 30px;
+            border: 1px solid rgba(0,0,0,0.1);
             pointer-events: none;
         }
 
         /* =====================================================================
-           SECTION 5 : ALARME (POSITION & TACTILE)
+           SECTION 5 : ALARME (POSITION HAUTE & RONDE)
            =====================================================================
         */
-        #p3 {
-            justify-content: flex-start !important;
-            padding-top: 45px;
-        }
+        #p3 { justify-content: flex-start !important; padding-top: 40px; }
 
         .alarm-glass-panel {
             background: rgba(255, 255, 255, 0.12);
-            border-radius: 35px;
+            border-radius: 40px;
             padding: 30px;
-            width: 88%;
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            -webkit-backdrop-filter: blur(20px);
-            -webkit-mask-image: -webkit-radial-gradient(white, black);
+            width: 90%;
+            border: 1.5px solid rgba(255, 255, 255, 0.3);
             text-align: center;
-            pointer-events: auto;
-            z-index: 999;
+            z-index: 1000;
         }
 
         .alarm-time-display {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 25px;
+            gap: 15px;
+            margin-bottom: 30px;
         }
 
         .alarm-time-display input {
-            background: rgba(255, 255, 255, 0.15);
-            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.4);
             color: #fff;
             font-size: 45px;
-            width: 95px;
+            width: 100px;
             text-align: center;
-            border-radius: 18px;
+            border-radius: 20px;
             padding: 10px;
             font-family: 'Archivo Black';
-            pointer-events: auto !important;
         }
 
         .alarm-toggle-ios {
             width: 100%;
-            padding: 20px;
-            border-radius: 25px;
+            padding: 22px;
+            border-radius: 30px;
             border: none;
             font-family: 'Archivo Black';
-            font-size: 14px;
+            font-size: 15px;
             text-transform: uppercase;
-            pointer-events: auto;
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
         }
 
-        .alarm-off { background: rgba(255, 255, 255, 0.15); color: #fff; }
-        .alarm-on { background: #34c759; color: #fff; }
+        .alarm-on { background: #34c759; }
 
         /* =====================================================================
-           SECTION 6 : NAVIGATION & DOTS (PLUS BAS)
+           SECTION 6 : NAVIGATION DOTS (TOUT EN BAS)
            =====================================================================
         */
         #nav-bar {
-            position: fixed; 
-            bottom: 10px; /* Position minimale pour l'iPhone 4S */
-            width: 100%;
-            display: flex; justify-content: center; z-index: 500;
+            position: fixed; bottom: 10px;
+            width: 100%; display: flex; justify-content: center; z-index: 500;
         }
 
         #dots-wrapper {
             background: rgba(255, 255, 255, 0.15);
-            padding: 8px 22px; border-radius: 30px;
-            display: flex; gap: 12px; border: 1px solid rgba(255,255,255,0.2);
-            -webkit-backdrop-filter: blur(8px);
+            padding: 8px 25px; border-radius: 30px;
+            display: flex; gap: 15px; border: 1px solid rgba(255,255,255,0.2);
         }
 
         .dot { width: 8px; height: 8px; background: rgba(255,255,255,0.3); border-radius: 50%; transition: 0.4s; }
-        .dot-active { background: #fff; width: 28px; border-radius: 10px; }
+        .dot-active { background: #fff; width: 30px; border-radius: 10px; }
 
+        /* Page Transitions */
         .page {
-            position: absolute;
-            width: 100%; height: 100%;
+            position: absolute; width: 100%; height: 100%;
             display: flex; flex-direction: column;
             justify-content: center; align-items: center;
             opacity: 0; visibility: hidden;
-            -webkit-transform: scale(1.1);
-            -webkit-transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+            -webkit-transform: scale(1.05);
+            -webkit-transition: all 0.5s ease-out;
         }
         .active-page { opacity: 1; visibility: visible; -webkit-transform: scale(1); }
-        .exit-left { -webkit-transform: translateX(-100%) scale(0.9); opacity: 0; }
-        .exit-right { -webkit-transform: translateX(100%) scale(0.9); opacity: 0; }
+        .exit-left { -webkit-transform: translateX(-100%); opacity: 0; }
+        .exit-right { -webkit-transform: translateX(100%); opacity: 0; }
     </style>
 </head>
 <body onmousedown="handleStart(event)" onmouseup="handleEnd(event)" ontouchstart="handleStart(event)" ontouchend="handleEnd(event)">
@@ -234,29 +230,39 @@
     <button id="stop-btn" style="display:none; position:fixed; top:20px; right:20px; z-index:10000; background:#ff3b30; color:#fff; border:none; padding:15px 25px; border-radius:20px; font-family:'Archivo Black';" onclick="stopAlarmNow()">STOP</button>
 
     <div id="wrapper">
+        
         <div class="page active-page" id="p1">
-            <div id="clock">00:00</div>
-            <div id="date">-- -- ----</div>
+            <div id="clock-container">
+                <div id="h-display" class="time-part">00</div>
+                <div class="separator">
+                    <div class="dot-sep"></div>
+                    <div class="dot-sep"></div>
+                </div>
+                <div id="m-display" class="time-part">00</div>
+            </div>
+            <div id="date">SYNC...</div>
         </div>
 
         <div class="page" id="p2">
             <div class="widget-box">
-                <span id="temp-main" style="font-size:42px">☀️ --°</span>
-                <p style="font-size:11px; opacity:0.8; margin-top:5px">MÉTÉO ACTUELLE</p>
+                <span id="temp-main" style="font-size:48px">--°</span>
+                <p style="font-size:12px; opacity:0.6; margin-top:5px">EXTÉRIEUR</p>
             </div>
-            <div id="forecast-data" class="widget-box" style="display:flex; justify-content:space-around;"></div>
+            <div id="forecast-data" class="widget-box" style="display:flex; justify-content:space-around;">
+                </div>
         </div>
 
         <div class="page" id="p3">
             <div class="alarm-glass-panel">
                 <div class="alarm-time-display">
-                    <input type="number" id="al-h" value="07" pattern="\d*">
+                    <input type="number" id="al-h" value="07">
                     <span style="font-size:30px; opacity:0.4">:</span>
-                    <input type="number" id="al-m" value="30" pattern="\d*">
+                    <input type="number" id="al-m" value="30">
                 </div>
-                <button id="al-btn" class="alarm-toggle-ios alarm-off" onclick="toggleAlarm()">ACTIVER</button>
+                <button id="al-btn" class="alarm-toggle-ios" onclick="toggleAlarm()">ACTIVER</button>
             </div>
         </div>
+        
     </div>
 
     <div id="nav-bar">
@@ -282,8 +288,11 @@
         function updateClock() {
             var now = new Date();
             var h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
-            document.getElementById('clock').innerHTML = (h<10?'0'+h:h) + ":" + (m<10?'0'+m:m);
+            document.getElementById('h-display').innerHTML = (h<10?'0'+h:h);
+            document.getElementById('m-display').innerHTML = (m<10?'0'+m:m);
+            
             if (alarmActive && h == alarmH && m == alarmM && s == 0 && !isRinging) startRinging();
+            
             var jours = ["DIMANCHE", "LUNDI", "MARDI", "MERCREDI", "JEUDI", "VENDREDI", "SAMEDI"];
             var mois = ["JANVIER", "FÉVRIER", "MARS", "AVRIL", "MAI", "JUIN", "JUILLET", "AOÛT", "SEPTEMBRE", "OCTOBRE", "NOVEMBRE", "DÉCEMBRE"];
             document.getElementById('date').innerHTML = jours[now.getDay()] + " " + now.getDate() + " " + mois[now.getMonth()];
@@ -313,7 +322,7 @@
             newP.style.transition = "none";
             newP.className = "page " + (dir > 0 ? "exit-right" : "exit-left");
             setTimeout(function() {
-                newP.style.transition = "all 0.6s cubic-bezier(0.19, 1, 0.22, 1)";
+                newP.style.transition = "all 0.5s ease-out";
                 newP.className = "page active-page";
                 for(var i=1; i<=3; i++) document.getElementById('d'+i).className = "dot" + (i==next ? " dot-active" : "");
                 currentPage = next;
@@ -326,7 +335,7 @@
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4 && xhr.status === 200) {
                     var d = JSON.parse(xhr.responseText);
-                    document.getElementById('temp-main').innerHTML = "☀️ " + Math.round(d.current_weather.temperature) + "°";
+                    document.getElementById('temp-main').innerHTML = Math.round(d.current_weather.temperature) + "°";
                     var dNames = ["DIM", "LUN", "MAR", "MER", "JEU", "VEN", "SAM"];
                     var html = "";
                     for(var i=1; i<=4; i++) {
@@ -347,7 +356,7 @@
                 alarmM = parseInt(document.getElementById('al-m').value);
                 alarmActive = true; btn.innerHTML = "ACTIF"; btn.className = "alarm-toggle-ios alarm-on";
             } else {
-                alarmActive = false; btn.innerHTML = "ACTIVER"; btn.className = "alarm-toggle-ios alarm-off";
+                alarmActive = false; btn.innerHTML = "ACTIVER"; btn.className = "alarm-toggle-ios";
                 stopAlarmNow();
             }
         }
