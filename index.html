@@ -7,16 +7,22 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="icone.png">
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
-    <title>StandBy 4S Ultra Full</title>
+    <title>StandBy 4S Ultra Master</title>
+    
     <style>
-        /* --- PROTECTION ET DO NOT TOUCH --- */
+        /* =========================================
+           RESET & CORE STYLES (ANTI-SELECTION)
+           ========================================= */
         * {
+            margin: 0;
+            padding: 0;
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
             user-select: none;
             -webkit-touch-callout: none;
             -webkit-tap-highlight-color: transparent;
+            box-sizing: border-box;
         }
 
         input { 
@@ -25,157 +31,274 @@
         }
 
         body, html {
-            margin: 0; padding: 0; width: 100%; height: 100%;
-            background: #050505;
-            background: radial-gradient(circle at center, #1a2a3a 0%, #0d1217 70%, #050505 100%);
-            color: #ffffff; font-family: 'Archivo Black', Arial, sans-serif; 
+            width: 100%;
+            height: 100%;
+            background: #000;
+            background: radial-gradient(circle at center, #1a2a3a 0%, #080a0c 70%, #000000 100%);
+            color: #ffffff;
+            font-family: 'Archivo Black', Arial, sans-serif;
             overflow: hidden;
-            position: fixed; 
+            position: fixed;
         }
-        
-        #wrapper { 
-            width: 100%; height: 100%; 
-            position: relative; 
-            perspective: 1200px; /* Pour l'effet de profondeur */
+
+        /* =========================================
+           ANIMATIONS UBUNTU STYLE (OPTIMISÉES)
+           ========================================= */
+        #wrapper {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            -webkit-perspective: 1200px;
+            perspective: 1200px;
         }
-        
-        /* --- ANIMATIONS DE GLISSEMENT ET ZOOM (UBUNTU STYLE) --- */
-        .page { 
-            position: absolute; 
-            width: 100%; height: 100%; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center; 
-            align-items: center; 
+
+        .page {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             text-align: center;
             opacity: 0;
             visibility: hidden;
-            transform: scale(1.1);
-            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            -webkit-transform: scale(1.15);
+            transform: scale(1.15);
+            -webkit-transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
             pointer-events: none;
+            z-index: 1;
         }
 
-        .active-page { 
-            opacity: 1 !important; 
+        .active-page {
+            opacity: 1 !important;
             visibility: visible !important;
-            transform: scale(1) !important; 
+            -webkit-transform: scale(1) !important;
+            transform: scale(1) !important;
             z-index: 10;
             pointer-events: auto;
         }
 
-        /* Page qui sort vers la gauche (rapetisse et s'en va) */
-        .exit-left { 
-            transform: scale(0.6) translateX(-120%) !important; 
-            opacity: 0 !important; 
-        }
-        
-        /* Page qui sort vers la droite (rapetisse et s'en va) */
-        .exit-right { 
-            transform: scale(0.6) translateX(120%) !important; 
-            opacity: 0 !important; 
+        /* Sortie vers la Gauche (Next) */
+        .exit-left {
+            -webkit-transform: scale(0.6) translateX(-120%) !important;
+            transform: scale(0.6) translateX(-120%) !important;
+            opacity: 0 !important;
         }
 
-        /* --- ÉLÉMENTS DE L'HORLOGE --- */
-        #clock { 
-            font-size: 85px; 
-            line-height: 1; 
-            text-shadow: 0 10px 20px rgba(0,0,0,0.8); 
+        /* Sortie vers la Droite (Prev) */
+        .exit-right {
+            -webkit-transform: scale(0.6) translateX(120%) !important;
+            transform: scale(0.6) translateX(120%) !important;
+            opacity: 0 !important;
+        }
+
+        /* =========================================
+           HORLOGE & DATE (PAGE 1)
+           ========================================= */
+        #clock {
+            font-size: 82px;
+            line-height: 1;
+            text-shadow: 0 8px 25px rgba(0,0,0,0.7);
             letter-spacing: -2px;
         }
-        #date { 
-            font-size: 18px; 
-            color: #a0aab4; 
-            margin-top: 15px; 
-            text-transform: uppercase; 
+
+        #date {
+            font-size: 16px;
+            color: #a0aab4;
+            margin-top: 15px;
+            text-transform: uppercase;
             letter-spacing: 2px;
         }
 
-        /* --- WIDGET BATTERIE --- */
+        /* =========================================
+           BATTERIE STYLE APPLE
+           ========================================= */
         #status-bar-custom {
-            position: fixed; top: 15px; right: 20px;
-            display: flex; align-items: center; z-index: 1000;
-            font-family: -apple-system, sans-serif; font-weight: bold;
+            position: fixed;
+            top: 15px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            z-index: 1000;
         }
-        #bat-level-text { font-size: 13px; margin-right: 6px; color: #fff; }
+
+        #bat-level-text {
+            font-size: 12px;
+            margin-right: 6px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            font-weight: 600;
+        }
+
         #bat-shell {
-            width: 25px; height: 12px; border: 1.5px solid rgba(255,255,255,0.4);
-            border-radius: 3.5px; position: relative; padding: 1px;
+            width: 24px;
+            height: 11px;
+            border: 1.5px solid rgba(255,255,255,0.35);
+            border-radius: 3.5px;
+            position: relative;
+            padding: 1px;
         }
+
         #bat-shell::after {
-            content: ''; position: absolute; right: -4px; top: 3.5px;
-            width: 2.5px; height: 4px; background: rgba(255,255,255,0.4);
+            content: '';
+            position: absolute;
+            right: -4px;
+            top: 3px;
+            width: 2.5px;
+            height: 4px;
+            background: rgba(255,255,255,0.35);
             border-radius: 0 1px 1px 0;
         }
-        #bat-fill {
-            height: 100%; background: #30d158; border-radius: 1.5px;
-            width: 0%; transition: width 0.5s ease;
-        }
-        .bat-low { background: #ff3b30 !important; }
-        .bat-charging { color: #30d158 !important; }
 
-        /* --- WIDGETS MÉTÉO --- */
-        .widget-grid { width: 90%; margin: 0 auto; }
-        .widget {
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 18px; padding: 12px; margin-bottom: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.12);
+        #bat-fill {
+            height: 100%;
+            background: #30d158;
+            border-radius: 1.5px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        /* =========================================
+           WIDGETS MÉTÉO (PAGE 2)
+           ========================================= */
+        .widget-container {
+            width: 90%;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .widget-box {
+            background: rgba(255, 255, 255, 0.07);
+            border-radius: 18px;
+            padding: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
         }
 
-        /* --- INTERFACE ALARME --- */
-        .alarm-ui { 
-            background: rgba(255,255,255,0.05); 
-            padding: 25px; 
-            border-radius: 25px; 
-            width: 80%; 
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        .alarm-inputs { margin: 15px 0; }
-        input[type="number"] {
-            background: #1a1a1a; border: 1px solid #333; color: #fff;
-            font-size: 32px; width: 65px; text-align: center; border-radius: 12px; padding: 10px;
-            font-family: 'Archivo Black', sans-serif;
-        }
-        .btn-alarm {
-            padding: 15px 30px; border-radius: 15px; border: none; font-size: 14px;
-            font-family: 'Archivo Black', sans-serif; text-transform: uppercase; margin-top: 15px;
-            transition: transform 0.2s;
-        }
-        .btn-alarm:active { transform: scale(0.95); }
-        .alarm-off { background: #2c2c2e; color: #8e8e93; }
-        .alarm-on { background: #34c759; color: #fff; box-shadow: 0 0 15px rgba(52, 199, 89, 0.4); }
+        #temp-main { font-size: 38px; display: block; margin-bottom: 5px; }
+        #precip-info { color: #3498db; font-size: 14px; }
         
-        #stop-btn { 
-            display: none; background: #ff3b30; color: #fff; font-size: 22px; 
-            padding: 25px; width: 100%; position: fixed; bottom: 0; left:0; 
-            z-index: 2000; border: none; font-family: 'Archivo Black', sans-serif;
+        .forecast-grid {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 10px;
         }
 
-        /* --- NAVIGATION DOTS (PILULE) --- */
+        .forecast-item { font-size: 10px; color: #888; }
+        .forecast-temp { color: #fff; font-size: 14px; display: block; margin-top: 3px; }
+
+        /* =========================================
+           ALARME UI (PAGE 3)
+           ========================================= */
+        .alarm-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px;
+            border-radius: 25px;
+            width: 85%;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .time-picker {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .time-picker input {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            color: #fff;
+            font-size: 30px;
+            width: 65px;
+            text-align: center;
+            border-radius: 12px;
+            padding: 10px;
+            font-family: 'Archivo Black', sans-serif;
+        }
+
+        .alarm-toggle {
+            padding: 15px 35px;
+            border-radius: 15px;
+            border: none;
+            font-family: 'Archivo Black';
+            font-size: 14px;
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
+
+        .alarm-off { background: #2c2c2e; color: #8e8e93; }
+        .alarm-on { background: #34c759; color: #fff; box-shadow: 0 0 15px rgba(52, 199, 89, 0.3); }
+
+        /* BOUTON ARRÊT MODERNE */
+        #stop-btn {
+            display: none;
+            position: fixed;
+            bottom: 85px;
+            left: 50%;
+            -webkit-transform: translateX(-50%);
+            transform: translateX(-50%);
+            background: #ff3b30;
+            color: white;
+            padding: 18px 45px;
+            border-radius: 40px;
+            border: none;
+            font-family: 'Archivo Black';
+            font-size: 18px;
+            z-index: 5000;
+            box-shadow: 0 10px 30px rgba(255, 59, 48, 0.5);
+        }
+
+        /* =========================================
+           NAVIGATION (DOTS ÉTIRÉS)
+           ========================================= */
         #nav-bar {
-            position: fixed; bottom: 25px; width: 100%; height: 44px;
-            display: flex; justify-content: space-between; align-items: center;
+            position: fixed;
+            bottom: 20px;
+            width: 100%;
+            height: 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             z-index: 500;
         }
+
         .nav-arrow {
-            width: 70px; height: 100%; display: flex; align-items: center; justify-content: center;
-            font-size: 30px; color: rgba(255,255,255,0.15);
+            width: 65px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: rgba(255,255,255,0.12);
         }
-        #dots {
+
+        #dots-wrapper {
             background: rgba(255, 255, 255, 0.12);
-            padding: 8px 12px; border-radius: 25px;
-            display: flex; align-items: center;
-            backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
+            padding: 8px 14px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            -webkit-backdrop-filter: blur(8px);
         }
-        .dot { 
-            display: inline-block; width: 7px; height: 7px; 
-            background: rgba(255,255,255,0.25); border-radius: 4px; margin: 0 5px; 
+
+        .dot {
+            width: 7px;
+            height: 7px;
+            background: rgba(255,255,255,0.25);
+            border-radius: 10px;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        .dot-active { 
-            background: #ffffff !important; 
-            width: 22px; 
-            box-shadow: 0 0 8px rgba(255,255,255,0.4);
+
+        .dot-active {
+            background: #ffffff !important;
+            width: 22px;
+            box-shadow: 0 0 10px rgba(255,255,255,0.4);
         }
     </style>
 </head>
@@ -183,10 +306,12 @@
 
     <div id="status-bar-custom">
         <div id="bat-level-text">--%</div>
-        <div id="bat-shell"><div id="bat-fill"></div></div>
+        <div id="bat-shell">
+            <div id="bat-fill"></div>
+        </div>
     </div>
 
-    <button id="stop-btn" onclick="stopAlarmNow()">ARRÊTER L'ALARME</button>
+    <button id="stop-btn" onclick="stopAlarmNow()">ARRÊTER</button>
 
     <div id="wrapper">
         <div class="page active-page" id="p1">
@@ -195,35 +320,34 @@
         </div>
 
         <div class="page" id="p2">
-            <div class="widget-grid">
-                <div class="widget">
-                    <span id="emoji-main" style="font-size:40px">☀️</span>
-                    <span style="font-size:35px; margin-left:10px" id="temp">--°</span>
+            <div class="widget-container">
+                <div class="widget-box">
+                    <span id="temp-main">☀️ --°</span>
+                    <span id="precip-info">PLUIE: --%</span>
                 </div>
-                <div class="widget">
-                    <span style="font-size:18px; color:#3498db" id="precip">PLUIE: --%</span>
+                <div class="widget-box" id="forecast-box">
+                    <div class="forecast-grid" id="forecast-data">
+                        </div>
                 </div>
-                <div class="widget" id="forecast" style="margin-top:5px">
-                    </div>
             </div>
         </div>
 
         <div class="page" id="p3">
-            <div class="alarm-ui">
-                <div class="alarm-inputs">
-                    <input type="number" id="al-h" value="07" min="0" max="23"> 
-                    <span style="font-size:30px; vertical-align:middle">:</span> 
+            <div class="alarm-card">
+                <div class="time-picker">
+                    <input type="number" id="al-h" value="07" min="0" max="23">
+                    <span style="font-size:30px">:</span>
                     <input type="number" id="al-m" value="00" min="0" max="59">
                 </div>
-                <button id="al-btn" class="btn-alarm alarm-off" onclick="toggleAlarm()">DÉSACTIVÉE</button>
-                <div id="al-status" style="font-size:11px; margin-top:12px; color:#555; text-transform:uppercase">AUCUNE ALARME</div>
+                <button id="al-btn" class="alarm-toggle alarm-off" onclick="toggleAlarm()">DÉSACTIVÉE</button>
+                <div id="al-status" style="margin-top:15px; font-size:11px; color:#555">PAS DE RÉVEIL</div>
             </div>
         </div>
     </div>
 
     <div id="nav-bar">
         <div class="nav-arrow" onclick="prevPage()">‹</div>
-        <div id="dots">
+        <div id="dots-wrapper">
             <div class="dot dot-active" id="d1"></div>
             <div class="dot" id="d2"></div>
             <div class="dot" id="d3"></div>
@@ -232,7 +356,7 @@
     </div>
 
     <script type="text/javascript">
-        // --- CONFIGURATION GLOBALE ---
+        // --- VARIABLES GLOBALES ---
         var currentPage = 1;
         var alarmH = -1, alarmM = -1;
         var alarmActive = false;
@@ -241,157 +365,117 @@
         var melodyInterval = null;
         var xDown = null, yDown = null;
 
-        // --- GESTION DU TEMPS ---
-        function updateClock() {
+        // --- HORLOGE ET BATTERIE ---
+        function updateUI() {
             var now = new Date();
             var h = now.getHours();
             var m = now.getMinutes();
             var s = now.getSeconds();
-            
-            // Vérification Alarme
-            if (alarmActive && h == alarmH && m == alarmM && s == 0 && !isRinging) { 
-                startRinging(); 
+
+            // Check Alarme
+            if (alarmActive && h == alarmH && m == alarmM && s == 0 && !isRinging) {
+                startRinging();
             }
 
-            if (h < 10) h = "0" + h;
-            if (m < 10) m = "0" + m;
-            document.getElementById('clock').innerHTML = h + ":" + m;
-            
+            // Formatage
+            var displayH = h < 10 ? "0" + h : h;
+            var displayM = m < 10 ? "0" + m : m;
+            document.getElementById('clock').innerHTML = displayH + ":" + displayM;
+
             var jours = ["DIMANCHE", "LUNDI", "MARDI", "MERCREDI", "JEUDI", "VENDREDI", "SAMEDI"];
             var mois = ["JANVIER", "FÉVRIER", "MARS", "AVRIL", "MAI", "JUIN", "JUILLET", "AOÛT", "SEPTEMBRE", "OCTOBRE", "NOVEMBRE", "DÉCEMBRE"];
-            
             document.getElementById('date').innerHTML = jours[now.getDay()] + " " + now.getDate() + " " + mois[now.getMonth()];
-            
+
             updateBattery();
         }
 
-        // --- GESTION BATTERIE ---
         function updateBattery() {
             var battery = navigator.battery || navigator.webkitBattery || navigator.mozBattery;
             if (battery) {
                 var level = Math.round(battery.level * 100);
-                var textElem = document.getElementById('bat-level-text');
-                var fillElem = document.getElementById('bat-fill');
-
-                textElem.innerHTML = (battery.charging ? "⚡ " : "") + level + "%";
-                fillElem.style.width = level + "%";
-
-                if (level <= 20 && !battery.charging) {
-                    fillElem.className = "bat-low";
-                } else {
-                    fillElem.className = "";
-                }
-                
-                textElem.style.color = battery.charging ? "#30d158" : "#ffffff";
+                document.getElementById('bat-level-text').innerHTML = (battery.charging ? "⚡ " : "") + level + "%";
+                document.getElementById('bat-fill').style.width = level + "%";
+                document.getElementById('bat-fill').style.background = level <= 20 ? "#ff3b30" : "#30d158";
             }
         }
 
-        // --- GESTION NAVIGATION (SWIPE + CLICK) ---
+        // --- NAVIGATION & SWIPE ---
         function handleStart(evt) {
-            xDown = evt.touches ? evt.touches[0].clientX : evt.clientX;                                      
-            yDown = evt.touches ? evt.touches[0].clientY : evt.clientY;                                      
-        }                                                
+            xDown = evt.touches ? evt.touches[0].clientX : evt.clientX;
+            yDown = evt.touches ? evt.touches[0].clientY : evt.clientY;
+        }
 
         function handleEnd(evt) {
             if (!xDown || !yDown) return;
-            var xUp = evt.changedTouches ? evt.changedTouches[0].clientX : evt.clientX;                                    
+            var xUp = evt.changedTouches ? evt.changedTouches[0].clientX : evt.clientX;
             var yUp = evt.changedTouches ? evt.changedTouches[0].clientY : evt.clientY;
             var xDiff = xDown - xUp;
             var yDiff = yDown - yUp;
 
-            if (Math.abs(xDiff) > Math.abs(yDiff)) {
-                if (Math.abs(xDiff) > 45) { // Seuil de 45px
-                    if (xDiff > 0) nextPage();
-                    else prevPage();
-                }
+            if (Math.abs(xDiff) > Math.abs(yDiff) && Math.abs(xDiff) > 40) {
+                if (xDiff > 0) nextPage();
+                else prevPage();
             }
-            xDown = null; yDown = null;                                             
+            xDown = null; yDown = null;
         }
 
         function showPage(n, direction) {
             if (n === currentPage) return;
-
             var oldPage = document.getElementById('p' + currentPage);
             var newPage = document.getElementById('p' + n);
 
-            // Sortie de l'ancienne page
             oldPage.className = "page " + (direction === 'next' ? 'exit-left' : 'exit-right');
             
-            // Entrée de la nouvelle page
             newPage.style.transition = 'none';
             newPage.className = "page " + (direction === 'next' ? 'exit-right' : 'exit-left');
             
             setTimeout(function() {
-                newPage.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+                newPage.style.transition = 'all 0.6s cubic-bezier(0.23, 1, 0.32, 1)';
                 newPage.className = "page active-page";
-                
-                // Update Dots
                 for(var i=1; i<=3; i++) {
                     document.getElementById('d'+i).className = "dot" + (i==n ? " dot-active" : "");
                 }
             }, 50);
-
             currentPage = n;
         }
 
-        function nextPage() { 
-            var n = currentPage + 1; 
-            if(n > 3) n = 1; 
-            showPage(n, 'next'); 
-        }
+        function nextPage() { var n = currentPage + 1; if(n > 3) n = 1; showPage(n, 'next'); }
+        function prevPage() { var n = currentPage - 1; if(n < 1) n = 3; showPage(n, 'prev'); }
 
-        function prevPage() { 
-            var n = currentPage - 1; 
-            if(n < 1) n = 3; 
-            showPage(n, 'prev'); 
-        }
-
-        // --- GESTION ALARME ---
+        // --- ALARME LOGIQUE ---
         function toggleAlarm() {
             var btn = document.getElementById('al-btn');
             var status = document.getElementById('al-status');
             
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
             if (!alarmActive) {
                 alarmH = parseInt(document.getElementById('al-h').value);
                 alarmM = parseInt(document.getElementById('al-m').value);
                 alarmActive = true;
                 btn.innerHTML = "ACTIVÉE";
-                btn.className = "btn-alarm alarm-on";
-                status.innerHTML = "RÉVEIL À " + (alarmH < 10 ? "0"+alarmH : alarmH) + ":" + (alarmM < 10 ? "0"+alarmM : alarmM);
+                btn.className = "alarm-toggle alarm-on";
+                status.innerHTML = "RÉVEIL RÉGLÉ SUR " + (alarmH < 10 ? "0"+alarmH : alarmH) + ":" + (alarmM < 10 ? "0"+alarmM : alarmM);
             } else {
                 alarmActive = false;
                 btn.innerHTML = "DÉSACTIVÉE";
-                btn.className = "btn-alarm alarm-off";
-                status.innerHTML = "AUCUNE ALARME";
+                btn.className = "alarm-toggle alarm-off";
+                status.innerHTML = "PAS DE RÉVEIL";
                 if(isRinging) stopAlarmNow();
             }
-        }
-
-        function playNote(freq, duration) {
-            if(!audioCtx) return;
-            var osc = audioCtx.createOscillator();
-            var gain = audioCtx.createGain();
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.type = "triangle";
-            osc.frequency.value = freq;
-            gain.gain.setValueAtTime(0, audioCtx.currentTime);
-            gain.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + 0.1);
-            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
-            osc.start();
-            osc.stop(audioCtx.currentTime + duration);
         }
 
         function startRinging() {
             isRinging = true;
             document.getElementById('stop-btn').style.display = "block";
             melodyInterval = setInterval(function() {
-                playNote(880, 0.3); // Note La
-                setTimeout(function(){ if(isRinging) playNote(1046.50, 0.3); }, 400); // Note Do
+                if(!audioCtx) return;
+                var osc = audioCtx.createOscillator();
+                var gain = audioCtx.createGain();
+                osc.connect(gain); gain.connect(audioCtx.destination);
+                osc.type = "sine"; osc.frequency.value = 880;
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.8);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.8);
             }, 1000);
         }
 
@@ -401,38 +485,36 @@
             document.getElementById('stop-btn').style.display = "none";
         }
 
-        // --- GESTION MÉTÉO ---
+        // --- METEO LOGIQUE ---
         function getMeteo() {
             var xhr = new XMLHttpRequest();
-            // Localisation Castanet-Tolosan
             xhr.open('GET', 'https://api.open-meteo.com/v1/forecast?latitude=43.5157&longitude=1.5159&daily=temperature_2m_max,weathercode,precipitation_probability_max&current_weather=true&timezone=Europe%2FParis', true);
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4 && xhr.status === 200) {
                     var data = JSON.parse(xhr.responseText);
-                    document.getElementById('temp').innerHTML = Math.round(data.current_weather.temperature) + "°";
-                    document.getElementById('precip').innerHTML = "PLUIE: " + data.daily.precipitation_probability_max[0] + "%";
+                    var currentTemp = Math.round(data.current_weather.temperature);
+                    document.getElementById('temp-main').innerHTML = "☀️ " + currentTemp + "°";
+                    document.getElementById('precip-info').innerHTML = "PLUIE: " + data.daily.precipitation_probability_max[0] + "%";
                     
-                    var joursArr = ["DIM", "LUN", "MAR", "MER", "JEU", "VEN", "SAM"];
-                    var html = "<div style='display:table; width:100%'>";
+                    var days = ["DIM", "LUN", "MAR", "MER", "JEU", "VEN", "SAM"];
+                    var html = "";
                     for(var i=1; i<=4; i++) {
-                        var d = new Date();
-                        d.setDate(d.getDate() + i);
-                        html += "<div style='display:table-cell; font-size:10px; color:#888'>" + 
-                                joursArr[d.getDay()] + 
-                                "<b style='display:block; color:#fff; font-size:14px'>" + Math.round(data.daily.temperature_2m_max[i]) + "°</b></div>";
+                        var d = new Date(); d.setDate(d.getDate() + i);
+                        html += "<div class='forecast-item'>" + days[d.getDay()] + 
+                                "<span class='forecast-temp'>" + Math.round(data.daily.temperature_2m_max[i]) + "°</span></div>";
                     }
-                    document.getElementById('forecast').innerHTML = html + "</div>";
+                    document.getElementById('forecast-data').innerHTML = html;
                 }
             };
             xhr.send();
         }
 
-        // --- INITIALISATION ---
+        // --- INIT ---
         window.onload = function() {
-            updateClock();
+            updateUI();
             getMeteo();
-            setInterval(updateClock, 1000);
-            setInterval(getMeteo, 600000); // Maj toutes les 10 min
+            setInterval(updateUI, 1000);
+            setInterval(getMeteo, 600000);
         };
     </script>
 </body>
