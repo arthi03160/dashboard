@@ -10,11 +10,11 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
     
-    <title>StandBy 4S - Zero Bug Edition</title>
+    <title>StandBy 4S - Perfect Radiant</title>
     
     <style>
         /* =====================================================================
-           SECTION 1 : FONDATIONS
+           SECTION 1 : CORE
            =====================================================================
         */
         * {
@@ -42,7 +42,7 @@
         }
 
         /* =====================================================================
-           SECTION 2 : ENGINE BACKGROUND
+           SECTION 2 : BACKGROUND
            =====================================================================
         */
         #dynamic-bg {
@@ -57,17 +57,17 @@
         }
 
         /* =====================================================================
-           SECTION 3 : L'HEURE (AVEC POINTS RONDS)
+           SECTION 3 : L'HEURE (STYLE IDENTIQUE POUR CHIFFRES ET POINTS)
            =====================================================================
         */
         #clock-container {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 5px;
+            gap: 2px;
         }
 
-        .time-part {
+        .time-part, .separator {
             font-size: 108px;
             letter-spacing: -4px;
             color: rgba(255, 255, 255, 0.45);
@@ -76,27 +76,10 @@
                     drop-shadow(0px 8px 12px rgba(0,0,0,0.5));
         }
 
-        /* LE SÉPARATEUR À DEUX RONDS */
+        /* On ajuste la position des points pour qu'ils soient bien centrés avec l'Archivo Black */
         .separator {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            padding: 0 10px;
-            margin-top: 10px;
-        }
-
-        .dot-sep {
-            width: 12px;
-            height: 12px;
-            background: rgba(255, 255, 255, 0.8);
-            border-radius: 50%; /* FORCE LE ROND */
-            box-shadow: 0 0 10px rgba(255,255,255,0.6);
-            -webkit-animation: pulseDots 2s infinite ease-in-out;
-        }
-
-        @-webkit-keyframes pulseDots {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 1; }
+            margin-top: -12px;
+            padding: 0 5px;
         }
 
         #date {
@@ -112,7 +95,7 @@
         }
 
         /* =====================================================================
-           SECTION 4 : WIDGETS (SANS AUCUN SHADOW - ADIEU LES ANGLES)
+           SECTION 4 : WIDGETS (FIX BUG ANGLE CONSERVÉ)
            =====================================================================
         */
         .widget-box {
@@ -123,25 +106,13 @@
             background: rgba(255, 255, 255, 0.15);
             border-radius: 30px;
             border: 1.5px solid rgba(255, 255, 255, 0.3);
-            
-            /* ON DÉSACTIVE LE FLOU COMPLEXE ET L'OMBRE QUI CAUSENT LE BUG */
             box-shadow: none !important;
             overflow: hidden;
             text-align: center;
         }
 
-        /* Simulation de profondeur sans box-shadow */
-        .widget-box::before {
-            content: "";
-            position: absolute;
-            top: -2px; left: -2px; right: -2px; bottom: -2px;
-            border-radius: 30px;
-            border: 1px solid rgba(0,0,0,0.1);
-            pointer-events: none;
-        }
-
         /* =====================================================================
-           SECTION 5 : ALARME (POSITION HAUTE & RONDE)
+           SECTION 5 : ALARME UI
            =====================================================================
         */
         #p3 { justify-content: flex-start !important; padding-top: 40px; }
@@ -191,7 +162,7 @@
         .alarm-on { background: #34c759; }
 
         /* =====================================================================
-           SECTION 6 : NAVIGATION DOTS (TOUT EN BAS)
+           SECTION 6 : NAVIGATION
            =====================================================================
         */
         #nav-bar {
@@ -208,7 +179,6 @@
         .dot { width: 8px; height: 8px; background: rgba(255,255,255,0.3); border-radius: 50%; transition: 0.4s; }
         .dot-active { background: #fff; width: 30px; border-radius: 10px; }
 
-        /* Page Transitions */
         .page {
             position: absolute; width: 100%; height: 100%;
             display: flex; flex-direction: column;
@@ -234,10 +204,7 @@
         <div class="page active-page" id="p1">
             <div id="clock-container">
                 <div id="h-display" class="time-part">00</div>
-                <div class="separator">
-                    <div class="dot-sep"></div>
-                    <div class="dot-sep"></div>
-                </div>
+                <div class="separator">:</div>
                 <div id="m-display" class="time-part">00</div>
             </div>
             <div id="date">SYNC...</div>
@@ -248,8 +215,7 @@
                 <span id="temp-main" style="font-size:48px">--°</span>
                 <p style="font-size:12px; opacity:0.6; margin-top:5px">EXTÉRIEUR</p>
             </div>
-            <div id="forecast-data" class="widget-box" style="display:flex; justify-content:space-around;">
-                </div>
+            <div id="forecast-data" class="widget-box" style="display:flex; justify-content:space-around;"></div>
         </div>
 
         <div class="page" id="p3">
@@ -290,9 +256,7 @@
             var h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
             document.getElementById('h-display').innerHTML = (h<10?'0'+h:h);
             document.getElementById('m-display').innerHTML = (m<10?'0'+m:m);
-            
             if (alarmActive && h == alarmH && m == alarmM && s == 0 && !isRinging) startRinging();
-            
             var jours = ["DIMANCHE", "LUNDI", "MARDI", "MERCREDI", "JEUDI", "VENDREDI", "SAMEDI"];
             var mois = ["JANVIER", "FÉVRIER", "MARS", "AVRIL", "MAI", "JUIN", "JUILLET", "AOÛT", "SEPTEMBRE", "OCTOBRE", "NOVEMBRE", "DÉCEMBRE"];
             document.getElementById('date').innerHTML = jours[now.getDay()] + " " + now.getDate() + " " + mois[now.getMonth()];
