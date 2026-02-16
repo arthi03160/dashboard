@@ -10,7 +10,7 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
     
-    <title>StandBy 4S - Final Smooth</title>
+    <title>StandBy 4S - WebApp Fix</title>
     
     <style>
         /* =====================================================================
@@ -32,6 +32,8 @@
             font-family: 'Archivo Black', Arial, sans-serif;
             overflow: hidden;
             position: fixed;
+            /* Force le rendu 3D sur le body pour la Web App */
+            -webkit-transform: translateZ(0);
         }
 
         input { 
@@ -42,7 +44,7 @@
         }
 
         /* =====================================================================
-           SECTION 2 : BACKGROUND ENGINE
+           SECTION 2 : BACKGROUND
            =====================================================================
         */
         #dynamic-bg {
@@ -57,134 +59,103 @@
         }
 
         /* =====================================================================
-           SECTION 3 : L'HEURE (POINTS RONDS SAFARI)
+           SECTION 3 : L'HEURE (POINTS RONDS)
            =====================================================================
         */
         #clock-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
         }
 
         .time-part {
-            font-size: 108px;
-            letter-spacing: -4px;
+            font-size: 108px; letter-spacing: -4px;
             color: rgba(255, 255, 255, 0.45);
             -webkit-text-stroke: 1.8px rgba(255, 255, 255, 0.85);
-            filter: drop-shadow(0px 0px 10px rgba(255,255,255,0.3));
+            -webkit-filter: drop-shadow(0px 0px 10px rgba(255,255,255,0.3));
         }
 
         .separator-container {
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
-            padding: 0 5px;
-            margin-top: 5px;
+            display: flex; flex-direction: column; gap: 18px; padding: 0 5px; margin-top: 5px;
         }
 
         .dot-round {
-            width: 14px;
-            height: 14px;
-            background: rgba(255, 255, 255, 0.45);
-            border-radius: 50%;
-            border: 1.5px solid rgba(255, 255, 255, 0.85);
-            box-shadow: 0px 0px 8px rgba(255,255,255,0.3);
+            width: 14px; height: 14px; background: rgba(255, 255, 255, 0.45);
+            border-radius: 50%; border: 1.5px solid rgba(255, 255, 255, 0.85);
         }
 
         #date {
-            font-size: 14px;
-            margin-top: 20px;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 8px 20px;
-            border-radius: 50px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            display: inline-block;
+            font-size: 14px; margin-top: 20px; text-transform: uppercase; letter-spacing: 3px;
+            background: rgba(255, 255, 255, 0.2); padding: 8px 20px; border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.3); display: inline-block;
         }
 
         /* =====================================================================
-           SECTION 4 : WIDGETS (SANS BUG)
+           SECTION 4 : WIDGETS
            =====================================================================
         */
         .widget-box {
-            position: relative;
-            width: 92%;
-            margin-bottom: 12px;
-            padding: 22px;
-            background: rgba(255, 255, 255, 0.15);
-            border-radius: 30px;
-            border: 1.5px solid rgba(255, 255, 255, 0.3);
-            text-align: center;
+            position: relative; width: 92%; margin-bottom: 12px; padding: 22px;
+            background: rgba(255, 255, 255, 0.15); border-radius: 30px;
+            border: 1.5px solid rgba(255, 255, 255, 0.3); text-align: center;
         }
 
         /* =====================================================================
-           SECTION 5 : ANIMATION SCALE RESTAURÉE
+           SECTION 5 : ANIMATION SCALE (WEB APP OPTIMIZED)
            =====================================================================
         */
+        #wrapper {
+            position: relative; width: 100%; height: 100%;
+            -webkit-perspective: 1000; /* Aide au rendu des transitions */
+        }
+
         .page {
-            position: absolute;
-            width: 100%; height: 100%;
+            position: absolute; width: 100%; height: 100%;
             display: flex; flex-direction: column;
             justify-content: center; align-items: center;
             
-            /* État par défaut : Caché et un peu petit */
             opacity: 0;
             visibility: hidden;
-            -webkit-transform: scale(0.85);
             
-            /* Transition fluide combinant Scale et Opacity */
-            -webkit-transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+            /* On ajoute translateZ(0) pour forcer le GPU sur la Web App */
+            -webkit-transform: scale(0.85) translateZ(0);
+            
+            /* On définit explicitement les propriétés de transition pour iOS 9 Web App */
+            -webkit-transition-property: -webkit-transform, opacity, visibility;
+            -webkit-transition-duration: 0.6s;
+            -webkit-transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
         }
 
         .active-page {
             opacity: 1;
             visibility: visible;
-            -webkit-transform: scale(1);
+            -webkit-transform: scale(1) translateZ(0);
         }
 
-        /* Styles de sortie lors du swipe */
         .exit-left {
-            -webkit-transform: translateX(-50%) scale(0.8);
+            -webkit-transform: translateX(-100%) scale(0.8) translateZ(0);
             opacity: 0;
         }
 
         .exit-right {
-            -webkit-transform: translateX(50%) scale(0.8);
+            -webkit-transform: translateX(100%) scale(0.8) translateZ(0);
             opacity: 0;
         }
 
         /* =====================================================================
-           SECTION 6 : ALARME & NAV
+           SECTION 6 : NAVIGATION & ALARME
            =====================================================================
         */
-        #p3 { justify-content: flex-start !important; padding-top: 40px; }
-
-        .alarm-glass-panel {
-            background: rgba(255, 255, 255, 0.12);
-            border-radius: 40px; padding: 30px; width: 90%;
-            border: 1.5px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .alarm-time-display input {
-            background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255, 255, 255, 0.4);
-            color: #fff; font-size: 45px; width: 100px; text-align: center; border-radius: 20px; padding: 10px;
-            font-family: 'Archivo Black';
-        }
-
         #nav-bar {
-            position: fixed; bottom: 10px;
-            width: 100%; display: flex; justify-content: center; z-index: 500;
+            position: fixed; bottom: 10px; width: 100%; 
+            display: flex; justify-content: center; z-index: 500;
         }
 
         #dots-wrapper {
-            background: rgba(255, 255, 255, 0.15);
-            padding: 8px 25px; border-radius: 30px;
-            display: flex; gap: 15px; border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.15); padding: 8px 25px; 
+            border-radius: 30px; display: flex; gap: 15px; 
+            border: 1px solid rgba(255,255,255,0.2);
         }
 
-        .dot { width: 8px; height: 8px; background: rgba(255,255,255,0.3); border-radius: 50%; transition: 0.4s; }
+        .dot { width: 8px; height: 8px; background: rgba(255,255,255,0.3); border-radius: 50%; -webkit-transition: 0.4s; }
         .dot-active { background: #fff; width: 30px; border-radius: 10px; }
     </style>
 </head>
@@ -217,7 +188,7 @@
         </div>
 
         <div class="page" id="p3">
-            <div class="alarm-glass-panel">
+            <div class="alarm-glass-panel" style="background:rgba(255,255,255,0.12); border-radius:40px; padding:30px; width:90%; border:1.5px solid rgba(255,255,255,0.3); text-align:center;">
                 <div class="alarm-time-display" style="display:flex; justify-content:center; align-items:center; gap:15px; margin-bottom:30px;">
                     <input type="number" id="al-h" value="07">
                     <span style="font-size:30px; opacity:0.4">:</span>
@@ -280,19 +251,16 @@
             var oldP = document.getElementById('p' + currentPage);
             var newP = document.getElementById('p' + next);
 
-            // Applique l'effet de sortie
             oldP.className = "page " + (dir > 0 ? "exit-left" : "exit-right");
-
-            // Prépare la nouvelle page (déjà en scale 0.85 par défaut)
-            newP.style.transition = "none";
+            newP.style.webkitTransition = "none"; // Stop transition pour repositionner
             newP.className = "page " + (dir > 0 ? "exit-right" : "exit-left");
 
             setTimeout(function() {
-                newP.style.transition = "all 0.6s cubic-bezier(0.19, 1, 0.22, 1)";
+                newP.style.webkitTransition = "all 0.6s cubic-bezier(0.19, 1, 0.22, 1)";
                 newP.className = "page active-page";
                 for(var i=1; i<=3; i++) document.getElementById('d'+i).className = "dot" + (i==next ? " dot-active" : "");
                 currentPage = next;
-            }, 50);
+            }, 60); // Augmenté légèrement pour laisser le temps au moteur WebApp
         }
 
         function getMeteo() {
