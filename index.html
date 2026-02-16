@@ -11,7 +11,7 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
     
-    <title>StandBy 4S - True Liquid Glass</title>
+    <title>StandBy 4S - Final Liquid Glass</title>
     
     <style>
         /* =====================================================================
@@ -38,7 +38,7 @@
         }
 
         /* =====================================================================
-           SECTION 2 : BACKGROUND ENGINE
+           SECTION 2 : BACKGROUND ENGINE (S'ADAPTE AUX IMAGES)
            =====================================================================
         */
         #dynamic-bg {
@@ -51,7 +51,6 @@
             background-position: center;
             background-repeat: no-repeat;
             -webkit-transition: background-image 2.5s ease-in-out;
-            transition: background-image 2.5s ease-in-out;
             z-index: -1;
         }
 
@@ -66,114 +65,83 @@
         }
 
         /* =====================================================================
-           SECTION 3 : TRUE LIQUID GLASS UI (iOS 26)
+           SECTION 3 : NEW LIQUID GLASS CLOCK (iOS 26 REFINED)
            =====================================================================
         */
         #clock-container {
             position: relative;
-            padding: 20px;
+            padding: 10px;
         }
 
         #clock {
-            font-size: 85px;
+            font-size: 88px;
             line-height: 1;
-            letter-spacing: -3px;
+            letter-spacing: -4px;
+            position: relative;
             
-            /* EFFET LIQUIDE AVANCÉ : 
-               On crée une superposition de blancs et de gris pour simuler la vitre.
+            /* L'EFFET LIQUIDE iOS 26 : 
+               Utilisation d'un dégradé "Titane Brillant" pour éviter l'aspect gris sale.
             */
             background: -webkit-linear-gradient(
                 top, 
-                rgba(255,255,255,1) 0%, 
-                rgba(255,255,255,1) 48%, 
-                rgba(180,180,180,1) 50%, 
-                rgba(255,255,255,1) 52%, 
-                rgba(200,200,200,1) 100%
+                #ffffff 0%, 
+                #ffffff 45%, 
+                #f0f0f0 50%, 
+                #e0e0e0 100%
             );
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
 
-            /* L'ombre portée simule la réfraction du verre sur le fond */
-            filter: drop-shadow(0px 8px 15px rgba(0,0,0,0.7));
+            /* Ombre portée pour détacher l'heure du fond */
+            filter: drop-shadow(0px 10px 12px rgba(0,0,0,0.6));
             
-            /* Ajout d'un contour "Glossy" très fin pour détacher l'heure */
-            -webkit-text-stroke: 0.5px rgba(255, 255, 255, 0.4);
+            /* Liseré de verre sur les bords */
+            -webkit-text-stroke: 0.8px rgba(255, 255, 255, 0.6);
         }
 
-        /* Reflet spéculaire qui passe sur l'heure (Animation liquide) */
+        /* Le reflet "Goutte d'eau" (Pure Liquid Gloss) */
         #clock::after {
             content: attr(data-time);
             position: absolute;
             left: 0;
             top: 0;
-            z-index: 2;
+            width: 100%;
             background: -webkit-linear-gradient(
-                135deg, 
-                transparent 40%, 
-                rgba(255,255,255,0.8) 50%, 
-                transparent 60%
+                -45deg, 
+                transparent 30%, 
+                rgba(255,255,255,0.9) 50%, 
+                transparent 70%
             );
-            background-size: 200% 100%;
+            background-size: 200% 200%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            -webkit-animation: shine 6s infinite linear;
+            -webkit-animation: liquidShine 5s infinite ease-in-out;
+            z-index: 5;
         }
 
-        @-webkit-keyframes shine {
+        @-webkit-keyframes liquidShine {
             0% { background-position: 200% 0; }
             100% { background-position: -200% 0; }
         }
 
+        /* Style de la date (Validé par l'utilisateur) */
         #date {
             font-size: 15px;
-            color: rgba(255,255,255,0.9);
+            color: #fff;
             margin-top: 15px;
             text-transform: uppercase;
             letter-spacing: 3px;
             text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-            /* Petit effet glassmorphism sur la date aussi */
-            background: rgba(255,255,255,0.1);
-            padding: 5px 15px;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 6px 18px;
             border-radius: 20px;
             display: inline-block;
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         /* =====================================================================
-           SECTION 4 : NAVIGATION & PAGES
-           =====================================================================
-        */
-        #wrapper {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            z-index: 10;
-        }
-
-        .page {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            visibility: hidden;
-            -webkit-transform: scale(1.1);
-            -webkit-transition: all 0.7s cubic-bezier(0.19, 1, 0.22, 1);
-        }
-
-        .active-page {
-            opacity: 1 !important;
-            visibility: visible !important;
-            -webkit-transform: scale(1) !important;
-        }
-
-        .exit-left { -webkit-transform: translateX(-100%) scale(0.9) !important; opacity: 0 !important; }
-        .exit-right { -webkit-transform: translateX(100%) scale(0.9) !important; opacity: 0 !important; }
-
-        /* =====================================================================
-           SECTION 5 : WIDGETS & ALARME
+           SECTION 4 : WIDGETS MÉTÉO (STYLE CONSERVÉ)
            =====================================================================
         */
         .widget-box {
@@ -187,81 +155,118 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
 
-        .time-picker input {
-            background: rgba(0,0,0,0.3);
-            border: 1px solid rgba(255,255,255,0.2);
-            color: #fff;
-            font-size: 35px;
-            width: 75px;
+        #forecast-data div {
             text-align: center;
-            border-radius: 15px;
-            padding: 10px;
-            font-family: 'Archivo Black';
+            font-size: 12px;
+            color: rgba(255,255,255,0.8);
         }
 
-        .alarm-toggle {
-            padding: 20px 45px;
-            border-radius: 30px;
-            border: none;
-            font-family: 'Archivo Black';
-            font-size: 14px;
-            margin-top: 20px;
-            text-transform: uppercase;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        #forecast-data b {
+            font-size: 16px;
+            display: block;
+            margin-top: 4px;
+            color: #fff;
         }
-
-        .alarm-off { background: rgba(255,255,255,0.2); color: #fff; }
-        .alarm-on { background: #34c759; color: #fff; box-shadow: 0 0 20px rgba(52, 199, 89, 0.5); }
 
         /* =====================================================================
-           SECTION 6 : DOTS & NAV BAR
+           SECTION 5 : ALARME UI (REFONTE TOTALE)
            =====================================================================
         */
-        #nav-bar {
-            position: fixed;
-            bottom: 25px;
-            width: 100%;
+        .alarm-glass-panel {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 35px;
+            padding: 30px;
+            width: 85%;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            -webkit-backdrop-filter: blur(20px);
+            text-align: center;
+        }
+
+        .alarm-time-display {
             display: flex;
             justify-content: center;
-            z-index: 500;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .alarm-time-display input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            font-size: 42px;
+            width: 85px;
+            text-align: center;
+            border-radius: 20px;
+            padding: 5px;
+            font-family: 'Archivo Black';
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .alarm-toggle-ios {
+            width: 100%;
+            padding: 22px;
+            border-radius: 25px;
+            border: none;
+            font-family: 'Archivo Black';
+            font-size: 16px;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            text-transform: uppercase;
+        }
+
+        .alarm-off { 
+            background: rgba(255, 255, 255, 0.1); 
+            color: rgba(255,255,255,0.5); 
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .alarm-on { 
+            background: #34c759; 
+            color: #fff; 
+            box-shadow: 0 0 25px rgba(52, 199, 89, 0.6); 
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        /* =====================================================================
+           SECTION 6 : NAVIGATION ET PAGES
+           =====================================================================
+        */
+        #wrapper { width: 100%; height: 100%; position: relative; z-index: 10; }
+
+        .page {
+            position: absolute;
+            width: 100%; height: 100%;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            opacity: 0; visibility: hidden;
+            -webkit-transform: scale(1.1);
+            -webkit-transition: all 0.7s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .active-page { opacity: 1; visibility: visible; -webkit-transform: scale(1); }
+        .exit-left { -webkit-transform: translateX(-100%) scale(0.9); opacity: 0; }
+        .exit-right { -webkit-transform: translateX(100%) scale(0.9); opacity: 0; }
+
+        #nav-bar {
+            position: fixed; bottom: 25px; width: 100%;
+            display: flex; justify-content: center; z-index: 500;
         }
 
         #dots-wrapper {
             background: rgba(255, 255, 255, 0.15);
-            padding: 10px 25px;
-            border-radius: 30px;
-            display: flex;
-            gap: 15px;
-            border: 1px solid rgba(255,255,255,0.1);
+            padding: 10px 25px; border-radius: 30px;
+            display: flex; gap: 15px; border: 1px solid rgba(255,255,255,0.1);
             -webkit-backdrop-filter: blur(5px);
         }
 
-        .dot {
-            width: 10px;
-            height: 10px;
-            background: rgba(255,255,255,0.3);
-            border-radius: 50%;
-            transition: all 0.4s ease;
-        }
-
-        .dot-active {
-            background: #fff !important;
-            width: 30px;
-            border-radius: 10px;
-        }
+        .dot { width: 10px; height: 10px; background: rgba(255,255,255,0.3); border-radius: 50%; transition: all 0.4s ease; }
+        .dot-active { background: #fff; width: 30px; border-radius: 10px; }
         
         #stop-btn {
-            display: none;
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #ff3b30;
-            color: white;
-            padding: 15px 30px;
-            border-radius: 20px;
-            border: none;
-            font-family: 'Archivo Black';
-            z-index: 9999;
+            display: none; position: fixed; top: 20px; right: 20px;
+            background: #ff3b30; color: white; padding: 15px 30px;
+            border-radius: 20px; border: none; font-family: 'Archivo Black'; z-index: 9999;
         }
     </style>
 </head>
@@ -270,7 +275,7 @@
     <div id="dynamic-bg"></div>
     <div id="bg-overlay"></div>
     
-    <button id="stop-btn" onclick="stopAlarmNow()">STOP</button>
+    <button id="stop-btn" onclick="stopAlarmNow()">STOP ALARME</button>
 
     <div id="wrapper">
         
@@ -278,24 +283,26 @@
             <div id="clock-container">
                 <div id="clock" data-time="00:00">00:00</div>
             </div>
-            <div id="date">INITIALISATION</div>
+            <div id="date">-- -- ----</div>
         </div>
 
         <div class="page" id="p2">
             <div class="widget-box">
                 <span id="temp-main" style="font-size:40px">☀️ --°</span>
-                <p id="precip-info" style="font-size:12px; opacity:0.7; margin-top:5px">PRECIPITATIONS : --%</p>
+                <p style="font-size:12px; opacity:0.7; margin-top:5px" id="precip-info">PRÉVISIONS LOCALES</p>
             </div>
             <div id="forecast-data" class="widget-box" style="display:flex; justify-content:space-around;">
                 </div>
         </div>
 
         <div class="page" id="p3">
-            <div class="widget-box" style="background:rgba(0,0,0,0.4)">
-                <div class="time-picker">
-                    <input type="number" id="al-h" value="07"> : <input type="number" id="al-m" value="30">
+            <div class="alarm-glass-panel">
+                <div class="alarm-time-display">
+                    <input type="number" id="al-h" value="07">
+                    <span style="font-size:30px; opacity:0.5">:</span>
+                    <input type="number" id="al-m" value="30">
                 </div>
-                <button id="al-btn" class="alarm-toggle alarm-off" onclick="toggleAlarm()">OFF</button>
+                <button id="al-btn" class="alarm-toggle-ios alarm-off" onclick="toggleAlarm()">ACTIVER L'ALARME</button>
             </div>
         </div>
         
@@ -320,7 +327,7 @@
         function updateBackground() {
             var now = new Date();
             var totalMin = (now.getHours() * 60) + now.getMinutes();
-            var isDay = (totalMin >= 450 && totalMin < 1260); // 7h30 - 21h00
+            var isDay = (totalMin >= 450 && totalMin < 1260); 
             var bgElem = document.getElementById('dynamic-bg');
             var imageUrl = isDay ? "jour.jpg" : "nuit.jpg";
             if (bgElem.style.backgroundImage.indexOf(imageUrl) === -1) {
@@ -335,7 +342,6 @@
             var mStr = (m < 10) ? "0" + m : m;
             var timeStr = hStr + ":" + mStr;
             
-            // Mise à jour de l'heure et du data-attribute pour le reflet
             var clockEl = document.getElementById('clock');
             clockEl.innerHTML = timeStr;
             clockEl.setAttribute('data-time', timeStr);
@@ -343,13 +349,13 @@
             if (alarmActive && h == alarmH && m == alarmM && s == 0 && !isRinging) startRinging();
 
             var jours = ["DIMANCHE", "LUNDI", "MARDI", "MERCREDI", "JEUDI", "VENDREDI", "SAMEDI"];
-            var mois = ["JANVIER", "FEVRIER", "MARS", "AVRIL", "MAI", "JUIN", "JUILLET", "AOUT", "SEPTEMBRE", "OCTOBRE", "NOVEMBRE", "DECEMBRE"];
+            var mois = ["JANVIER", "FÉVRIER", "MARS", "AVRIL", "MAI", "JUIN", "JUILLET", "AOÛT", "SEPTEMBRE", "OCTOBRE", "NOVEMBRE", "DÉCEMBRE"];
             document.getElementById('date').innerHTML = jours[now.getDay()] + " " + now.getDate() + " " + mois[now.getMonth()];
             
             if (s === 0) updateBackground();
         }
 
-        /* LOGIQUE DE NAVIGATION */
+        /* NAVIGATION SWIPE */
         function handleStart(evt) {
             xDown = evt.touches ? evt.touches[0].clientX : evt.clientX;
             yDown = evt.touches ? evt.touches[0].clientY : evt.clientY;
@@ -381,19 +387,22 @@
             }, 50);
         }
 
-        /* METEO & ALARME */
+        /* MÉTÉO (CORRECTION DES JOURS) */
         function getMeteo() {
             var xhr = new XMLHttpRequest();
-            xhr.open('GET', 'https://api.open-meteo.com/v1/forecast?latitude=43.5157&longitude=1.5159&daily=temperature_2m_max,precipitation_probability_max&current_weather=true&timezone=Europe%2FParis', true);
+            xhr.open('GET', 'https://api.open-meteo.com/v1/forecast?latitude=43.5157&longitude=1.5159&daily=temperature_2m_max&current_weather=true&timezone=Europe%2FParis', true);
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4 && xhr.status === 200) {
                     var d = JSON.parse(xhr.responseText);
                     document.getElementById('temp-main').innerHTML = "☀️ " + Math.round(d.current_weather.temperature) + "°";
-                    document.getElementById('precip-info').innerHTML = "PRECIPITATIONS : " + d.daily.precipitation_probability_max[0] + "%";
+                    
+                    var dNames = ["DIM", "LUN", "MAR", "MER", "JEU", "VEN", "SAM"];
                     var html = "";
                     for(var i=1; i<=4; i++) {
-                        var date = new Date(); date.setDate(date.getDate()+i);
-                        html += "<div>" + date.getDate() + "<br><b>" + Math.round(d.daily.temperature_2m_max[i]) + "°</b></div>";
+                        var dateObj = new Date();
+                        dateObj.setDate(dateObj.getDate() + i);
+                        var dayName = dNames[dateObj.getDay()];
+                        html += "<div>" + dayName + "<br><b>" + Math.round(d.daily.temperature_2m_max[i]) + "°</b></div>";
                     }
                     document.getElementById('forecast-data').innerHTML = html;
                 }
@@ -401,15 +410,20 @@
             xhr.send();
         }
 
+        /* ALARME */
         function toggleAlarm() {
             var btn = document.getElementById('al-btn');
             if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             if (!alarmActive) {
                 alarmH = parseInt(document.getElementById('al-h').value);
                 alarmM = parseInt(document.getElementById('al-m').value);
-                alarmActive = true; btn.innerHTML = "ACTIVÉE"; btn.className = "alarm-toggle alarm-on";
+                alarmActive = true; 
+                btn.innerHTML = "ALARME ACTIVÉE"; 
+                btn.className = "alarm-toggle-ios alarm-on";
             } else {
-                alarmActive = false; btn.innerHTML = "OFF"; btn.className = "alarm-toggle alarm-off";
+                alarmActive = false; 
+                btn.innerHTML = "ACTIVER L'ALARME"; 
+                btn.className = "alarm-toggle-ios alarm-off";
                 stopAlarmNow();
             }
         }
