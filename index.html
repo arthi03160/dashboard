@@ -15,6 +15,8 @@
             background: radial-gradient(circle at center, #1a2a3a 0%, #0d1217 70%, #050505 100%);
             color: #ffffff; font-family: 'Archivo Black', Arial, sans-serif; 
             overflow: hidden;
+            /* Empêche le rebond élastique de Safari sur iOS */
+            position: fixed; 
         }
         
         #wrapper { width: 100%; height: 100%; position: relative; }
@@ -101,12 +103,12 @@
         }
         .dot-active { 
             background: #ffffff !important; 
-            width: 18px; /* On l'étire en largeur (effet pilule) */
+            width: 18px; 
             box-shadow: 0 0 5px rgba(255,255,255,0.3);
         }
     </style>
 </head>
-<body>
+<body ontouchstart="handleTouchStart(event)" ontouchend="handleTouchEnd(event)">
 
     <div id="status-bar-custom">
         <div id="bat-level-text">--%</div>
@@ -159,6 +161,10 @@
     <script type="text/javascript">
         var currentPage = 1, alarmH = -1, alarmM = -1, alarmActive = false, isRinging = false;
         var audioCtx = null, melodyInterval = null;
+        
+        // Variables pour le SWIPE
+        var xDown = null;                                                        
+        var yDown = null;
 
         function updateClock() {
             var now = new Date();
@@ -182,6 +188,36 @@
                 if (battery.charging) { document.getElementById('bat-level-text').className = "bat-charging"; } else { document.getElementById('bat-level-text').className = ""; }
             }
         }
+
+        // --- GESTION DU SWIPE ---
+        function handleTouchStart(evt) {
+            xDown = evt.touches[0].clientX;                                      
+            yDown = evt.touches[0].clientY;                                      
+        };                                                
+
+        function handleTouchEnd(evt) {
+            if ( ! xDown || ! yDown ) return;
+
+            var xUp = evt.changedTouches[0].clientX;                                    
+            var yUp = evt.changedTouches[0].clientY;
+
+            var xDiff = xDown - xUp;
+            var yDiff = yDown - yUp;
+
+            // On vérifie si le mouvement horizontal est plus important que le vertical
+            if ( Math.abs( xDiff ) > Math.abs( yDiff ) ) {
+                if ( xDiff > 50 ) {
+                    /* swipe gauche -> page suivante */
+                    nextPage();
+                } else if (xDiff < -50) {
+                    /* swipe droite -> page précédente */
+                    prevPage();
+                }                       
+            }
+            /* reset values */
+            xDown = null;
+            yDown = null;                                             
+        };
 
         function toggleAlarm() {
             var btn = document.getElementById('al-btn'), status = document.getElementById('al-status');
