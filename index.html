@@ -10,7 +10,7 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
     
-    <title>StandBy 4S - Safari Perfect</title>
+    <title>StandBy 4S - Final Smooth</title>
     
     <style>
         /* =====================================================================
@@ -42,7 +42,7 @@
         }
 
         /* =====================================================================
-           SECTION 2 : BACKGROUND
+           SECTION 2 : BACKGROUND ENGINE
            =====================================================================
         */
         #dynamic-bg {
@@ -57,14 +57,14 @@
         }
 
         /* =====================================================================
-           SECTION 3 : L'HEURE (AVEC LES POINTS RONDS FORCÉS)
+           SECTION 3 : L'HEURE (POINTS RONDS SAFARI)
            =====================================================================
         */
         #clock-container {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 10px;
         }
 
         .time-part {
@@ -72,26 +72,24 @@
             letter-spacing: -4px;
             color: rgba(255, 255, 255, 0.45);
             -webkit-text-stroke: 1.8px rgba(255, 255, 255, 0.85);
-            filter: drop-shadow(0px 0px 10px rgba(255,255,255,0.3))
-                    drop-shadow(0px 8px 12px rgba(0,0,0,0.5));
+            filter: drop-shadow(0px 0px 10px rgba(255,255,255,0.3));
         }
 
-        /* LE NOUVEAU SÉPARATEUR : DEUX RONDS CSS */
         .separator-container {
             display: flex;
             flex-direction: column;
-            gap: 20px; /* Espace entre les deux points */
-            padding: 0 10px;
+            gap: 18px;
+            padding: 0 5px;
             margin-top: 5px;
         }
 
         .dot-round {
             width: 14px;
             height: 14px;
-            background: rgba(255, 255, 255, 0.45); /* Même opacité que le texte */
-            border-radius: 50%; /* Force le rond parfait */
-            border: 1.5px solid rgba(255, 255, 255, 0.85); /* Même contour que le texte */
-            box-shadow: 0px 0px 10px rgba(255,255,255,0.3); /* Même lueur */
+            background: rgba(255, 255, 255, 0.45);
+            border-radius: 50%;
+            border: 1.5px solid rgba(255, 255, 255, 0.85);
+            box-shadow: 0px 0px 8px rgba(255,255,255,0.3);
         }
 
         #date {
@@ -107,7 +105,7 @@
         }
 
         /* =====================================================================
-           SECTION 4 : WIDGETS (FIX ANGLES)
+           SECTION 4 : WIDGETS (SANS BUG)
            =====================================================================
         */
         .widget-box {
@@ -118,65 +116,63 @@
             background: rgba(255, 255, 255, 0.15);
             border-radius: 30px;
             border: 1.5px solid rgba(255, 255, 255, 0.3);
-            box-shadow: none !important;
-            overflow: hidden;
             text-align: center;
         }
 
         /* =====================================================================
-           SECTION 5 : ALARME
+           SECTION 5 : ANIMATION SCALE RESTAURÉE
+           =====================================================================
+        */
+        .page {
+            position: absolute;
+            width: 100%; height: 100%;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            
+            /* État par défaut : Caché et un peu petit */
+            opacity: 0;
+            visibility: hidden;
+            -webkit-transform: scale(0.85);
+            
+            /* Transition fluide combinant Scale et Opacity */
+            -webkit-transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .active-page {
+            opacity: 1;
+            visibility: visible;
+            -webkit-transform: scale(1);
+        }
+
+        /* Styles de sortie lors du swipe */
+        .exit-left {
+            -webkit-transform: translateX(-50%) scale(0.8);
+            opacity: 0;
+        }
+
+        .exit-right {
+            -webkit-transform: translateX(50%) scale(0.8);
+            opacity: 0;
+        }
+
+        /* =====================================================================
+           SECTION 6 : ALARME & NAV
            =====================================================================
         */
         #p3 { justify-content: flex-start !important; padding-top: 40px; }
 
         .alarm-glass-panel {
             background: rgba(255, 255, 255, 0.12);
-            border-radius: 40px;
-            padding: 30px;
-            width: 90%;
+            border-radius: 40px; padding: 30px; width: 90%;
             border: 1.5px solid rgba(255, 255, 255, 0.3);
-            text-align: center;
-            z-index: 1000;
-        }
-
-        .alarm-time-display {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 30px;
         }
 
         .alarm-time-display input {
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid rgba(255, 255, 255, 0.4);
-            color: #fff;
-            font-size: 45px;
-            width: 100px;
-            text-align: center;
-            border-radius: 20px;
-            padding: 10px;
+            background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255, 255, 255, 0.4);
+            color: #fff; font-size: 45px; width: 100px; text-align: center; border-radius: 20px; padding: 10px;
             font-family: 'Archivo Black';
         }
 
-        .alarm-toggle-ios {
-            width: 100%;
-            padding: 22px;
-            border-radius: 30px;
-            border: none;
-            font-family: 'Archivo Black';
-            font-size: 15px;
-            text-transform: uppercase;
-            background: rgba(255, 255, 255, 0.2);
-            color: #fff;
-        }
-
-        .alarm-on { background: #34c759; }
-
-        /* =====================================================================
-           SECTION 6 : NAVIGATION
-           =====================================================================
-        */
         #nav-bar {
             position: fixed; bottom: 10px;
             width: 100%; display: flex; justify-content: center; z-index: 500;
@@ -190,18 +186,6 @@
 
         .dot { width: 8px; height: 8px; background: rgba(255,255,255,0.3); border-radius: 50%; transition: 0.4s; }
         .dot-active { background: #fff; width: 30px; border-radius: 10px; }
-
-        .page {
-            position: absolute; width: 100%; height: 100%;
-            display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
-            opacity: 0; visibility: hidden;
-            -webkit-transform: scale(1.05);
-            -webkit-transition: all 0.5s ease-out;
-        }
-        .active-page { opacity: 1; visibility: visible; -webkit-transform: scale(1); }
-        .exit-left { -webkit-transform: translateX(-100%); opacity: 0; }
-        .exit-right { -webkit-transform: translateX(100%); opacity: 0; }
     </style>
 </head>
 <body onmousedown="handleStart(event)" onmouseup="handleEnd(event)" ontouchstart="handleStart(event)" ontouchend="handleEnd(event)">
@@ -212,7 +196,6 @@
     <button id="stop-btn" style="display:none; position:fixed; top:20px; right:20px; z-index:10000; background:#ff3b30; color:#fff; border:none; padding:15px 25px; border-radius:20px; font-family:'Archivo Black';" onclick="stopAlarmNow()">STOP</button>
 
     <div id="wrapper">
-        
         <div class="page active-page" id="p1">
             <div id="clock-container">
                 <div id="h-display" class="time-part">00</div>
@@ -235,15 +218,14 @@
 
         <div class="page" id="p3">
             <div class="alarm-glass-panel">
-                <div class="alarm-time-display">
+                <div class="alarm-time-display" style="display:flex; justify-content:center; align-items:center; gap:15px; margin-bottom:30px;">
                     <input type="number" id="al-h" value="07">
                     <span style="font-size:30px; opacity:0.4">:</span>
                     <input type="number" id="al-m" value="30">
                 </div>
-                <button id="al-btn" class="alarm-toggle-ios" onclick="toggleAlarm()">ACTIVER</button>
+                <button id="al-btn" style="width:100%; padding:22px; border-radius:30px; border:none; font-family:'Archivo Black'; font-size:15px; text-transform:uppercase; background:rgba(255,255,255,0.2); color:#fff;" onclick="toggleAlarm()">ACTIVER</button>
             </div>
         </div>
-        
     </div>
 
     <div id="nav-bar">
@@ -297,11 +279,16 @@
             if (next < 1) next = 3; if (next > 3) next = 1;
             var oldP = document.getElementById('p' + currentPage);
             var newP = document.getElementById('p' + next);
+
+            // Applique l'effet de sortie
             oldP.className = "page " + (dir > 0 ? "exit-left" : "exit-right");
+
+            // Prépare la nouvelle page (déjà en scale 0.85 par défaut)
             newP.style.transition = "none";
             newP.className = "page " + (dir > 0 ? "exit-right" : "exit-left");
+
             setTimeout(function() {
-                newP.style.transition = "all 0.5s ease-out";
+                newP.style.transition = "all 0.6s cubic-bezier(0.19, 1, 0.22, 1)";
                 newP.className = "page active-page";
                 for(var i=1; i<=3; i++) document.getElementById('d'+i).className = "dot" + (i==next ? " dot-active" : "");
                 currentPage = next;
@@ -333,9 +320,9 @@
             if (!alarmActive) {
                 alarmH = parseInt(document.getElementById('al-h').value);
                 alarmM = parseInt(document.getElementById('al-m').value);
-                alarmActive = true; btn.innerHTML = "ACTIF"; btn.className = "alarm-toggle-ios alarm-on";
+                alarmActive = true; btn.innerHTML = "ACTIF"; btn.style.background = "#34c759";
             } else {
-                alarmActive = false; btn.innerHTML = "ACTIVER"; btn.className = "alarm-toggle-ios";
+                alarmActive = false; btn.innerHTML = "ACTIVER"; btn.style.background = "rgba(255,255,255,0.2)";
                 stopAlarmNow();
             }
         }
