@@ -3,29 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-touch-fullscreen" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="icone.png">
+    
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
-    <title>StandBy 4S Ultra Master Edition</title>
+    
+    <title>StandBy 4S Master Edition</title>
     
     <style>
         /* ============================================================
-           SECTION 1 : RESET ET PROTECTION INTERFACE
-           Empêche les bugs visuels et le surlignage bleu sur iPhone 4S
+           STYLE GLOBAL & ANTI-BUG IPHONE 4S
            ============================================================ */
         * {
             margin: 0;
             padding: 0;
-            -webkit-user-select: none; /* Empêche la sélection de texte */
+            /* Désactive la sélection de texte pour éviter le bug du curseur */
+            -webkit-user-select: none;
             user-select: none;
-            -webkit-touch-callout: none; /* Empêche le menu contextuel au clic long */
-            -webkit-tap-highlight-color: transparent; /* Supprime le flash bleu au clic */
+            /* Désactive le menu contextuel "Copier" au clic long */
+            -webkit-touch-callout: none;
+            /* Supprime le rectangle gris au clic sur les éléments */
+            -webkit-tap-highlight-color: transparent;
             box-sizing: border-box;
         }
 
-        /* Autorise la sélection uniquement dans les champs de texte de l'alarme */
+        /* Réactivation spécifique pour les réglages de l'alarme */
         input { 
             -webkit-user-select: auto !important; 
             user-select: auto !important; 
@@ -35,7 +40,7 @@
             width: 100%;
             height: 100%;
             background: #000;
-            /* Dégradé radial pour un effet de profondeur OLED (même sur LCD) */
+            /* Fond avec dégradé radial pour un aspect premium */
             background: radial-gradient(circle at center, #1a2a3a 0%, #080a0c 70%, #000000 100%);
             color: #ffffff;
             font-family: 'Archivo Black', Arial, sans-serif;
@@ -44,13 +49,14 @@
         }
 
         /* ============================================================
-           SECTION 2 : ANIMATIONS UBUNTU (ZOOM + GLISSEMENT)
-           Optimisé pour le processeur A5 de l'iPhone 4S
+           ANIMATIONS UBUNTU STYLE (OPTIMISÉES)
+           Utilise le GPU de la puce A5 pour rester fluide
            ============================================================ */
         #wrapper {
             width: 100%;
             height: 100%;
             position: relative;
+            /* Définit la perspective 3D pour les animations */
             -webkit-perspective: 1000px;
             perspective: 1000px;
         }
@@ -66,9 +72,10 @@
             text-align: center;
             opacity: 0;
             visibility: hidden;
-            /* État initial : légèrement zoomé */
+            /* Zoom initial avant l'entrée */
             -webkit-transform: scale(1.15);
             transform: scale(1.15);
+            /* Transition fluide style Ubuntu */
             -webkit-transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
             transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
             pointer-events: none;
@@ -84,14 +91,14 @@
             pointer-events: auto;
         }
 
-        /* Effet de rapetissement lors du changement vers la page suivante */
+        /* Animation de sortie vers la gauche (suivant) */
         .exit-left {
             -webkit-transform: scale(0.6) translateX(-120%) !important;
             transform: scale(0.6) translateX(-120%) !important;
             opacity: 0 !important;
         }
 
-        /* Effet de rapetissement lors du changement vers la page précédente */
+        /* Animation de sortie vers la droite (précédent) */
         .exit-right {
             -webkit-transform: scale(0.6) translateX(120%) !important;
             transform: scale(0.6) translateX(120%) !important;
@@ -99,7 +106,7 @@
         }
 
         /* ============================================================
-           SECTION 3 : ÉLÉMENTS GRAPHIQUES (HORLOGE, DATE, BATTERIE)
+           UI : HORLOGE, DATE ET BATTERIE
            ============================================================ */
         #clock {
             font-size: 78px;
@@ -116,7 +123,7 @@
             letter-spacing: 2px;
         }
 
-        /* Barre de statut batterie personnalisée */
+        /* Barre de statut batterie */
         #status-bar-custom {
             position: fixed;
             top: 12px;
@@ -129,7 +136,7 @@
         #bat-level-text {
             font-size: 11px;
             margin-right: 5px;
-            font-family: -apple-system, Helvetica, sans-serif;
+            font-family: -apple-system, sans-serif;
             font-weight: 600;
         }
 
@@ -157,12 +164,12 @@
             height: 100%;
             background: #30d158;
             border-radius: 1px;
-            width: 0%; /* Contrôlé par JavaScript */
+            width: 0%; 
             transition: width 0.5s ease;
         }
 
         /* ============================================================
-           SECTION 4 : WIDGETS ET ALARME
+           UI : WIDGETS ET ALARME
            ============================================================ */
         .widget-box {
             background: rgba(255, 255, 255, 0.08);
@@ -175,16 +182,12 @@
         }
 
         #temp-main { font-size: 34px; display: block; }
-        #precip-info { color: #3498db; font-size: 13px; }
         
         .forecast-grid {
             display: flex;
             justify-content: space-around;
             margin-top: 10px;
         }
-
-        .forecast-item { font-size: 10px; color: #888; }
-        .forecast-temp { color: #fff; font-size: 13px; display: block; }
 
         .alarm-card {
             background: rgba(255, 255, 255, 0.05);
@@ -219,6 +222,7 @@
         .alarm-off { background: #2c2c2e; color: #8e8e93; }
         .alarm-on { background: #34c759; color: #fff; }
 
+        /* BOUTON ARRÊTER (iOS 17 STYLE) */
         #stop-btn {
             display: none;
             position: fixed;
@@ -238,7 +242,7 @@
         }
 
         /* ============================================================
-           SECTION 5 : NAVIGATION DOTS (FIX IPHONE 4S)
+           NAVIGATION : DOTS (CORRIGÉ POUR ÉCRAN 4S)
            ============================================================ */
         #nav-bar {
             position: fixed;
@@ -267,7 +271,8 @@
             border-radius: 20px;
             display: flex;
             align-items: center;
-            gap: 12px; /* Espace crucial pour éviter que les dots collent */
+            /* Espace imposé entre les points */
+            gap: 12px;
             -webkit-backdrop-filter: blur(8px);
         }
 
@@ -281,7 +286,7 @@
 
         .dot-active {
             background: #ffffff !important;
-            width: 18px; /* Taille réduite pour le 4S */
+            width: 18px;
             box-shadow: 0 0 8px rgba(255,255,255,0.4);
         }
     </style>
@@ -289,8 +294,10 @@
 <body onmousedown="handleStart(event)" onmouseup="handleEnd(event)" ontouchstart="handleStart(event)" ontouchend="handleEnd(event)">
 
     <div id="status-bar-custom">
-        <div id="bat-level-text">100%</div>
-        <div id="bat-shell"><div id="bat-fill" style="width: 100%;"></div></div>
+        <div id="bat-level-text">...</div>
+        <div id="bat-shell">
+            <div id="bat-fill"></div>
+        </div>
     </div>
 
     <button id="stop-btn" onclick="stopAlarmNow()">ARRÊTER</button>
@@ -304,10 +311,11 @@
         <div class="page" id="p2">
             <div class="widget-box">
                 <span id="temp-main">☀️ --°</span>
-                <span id="precip-info">PLUIE: --%</span>
+                <span id="precip-info" style="color:#3498db; font-size:13px">PLUIE: --%</span>
             </div>
             <div class="widget-box">
-                <div class="forecast-grid" id="forecast-data"></div>
+                <div class="forecast-grid" id="forecast-data">
+                    </div>
             </div>
         </div>
 
@@ -335,46 +343,72 @@
 
     <script type="text/javascript">
         /* ============================================================
-           SECTION JS : LOGIQUE ET GESTION BATTERIE IPHONE
+           LOGIQUE JAVASCRIPT
            ============================================================ */
-        var currentPage = 1, alarmH = -1, alarmM = -1, alarmActive = false, isRinging = false;
-        var audioCtx = null, melodyInterval = null, xDown = null, yDown = null;
+        
+        // Variables d'état
+        var currentPage = 1;
+        var alarmH = -1, alarmM = -1;
+        var alarmActive = false;
+        var isRinging = false;
+        var audioCtx = null;
+        var melodyInterval = null;
+        var xDown = null, yDown = null;
 
-        // --- FONCTION BATTERIE (FIX IPHONE 4S) ---
+        /**
+         * GESTION DE LA BATTERIE (CORRECTIF IPHONE 4S)
+         * Cette fonction tente plusieurs méthodes pour récupérer le niveau
+         */
         function updateBattery() {
-            // On essaie de récupérer l'objet batterie (compatible avec différentes versions)
             var battery = navigator.battery || navigator.webkitBattery || navigator.mozBattery || navigator.msBattery;
+            var textElem = document.getElementById('bat-level-text');
+            var fillElem = document.getElementById('bat-fill');
             
-            if (battery) {
+            // Vérification si l'objet batterie existe et contient des données
+            if (battery && battery.level !== undefined && !isNaN(battery.level)) {
                 var level = Math.round(battery.level * 100);
-                var charging = battery.charging;
-                document.getElementById('bat-level-text').innerHTML = (charging ? "⚡ " : "") + level + "%";
-                document.getElementById('bat-fill').style.width = level + "%";
-                document.getElementById('bat-fill').style.background = level <= 20 ? "#ff3b30" : "#30d158";
-            } else {
-                // Si l'API est bloquée par iOS 9, on met une valeur par défaut élégante
-                document.getElementById('bat-level-text').innerHTML = "STANDBY";
-                document.getElementById('bat-fill').style.width = "100%";
-                document.getElementById('bat-fill').style.background = "rgba(255,255,255,0.3)";
+                textElem.innerHTML = (battery.charging ? "⚡ " : "") + level + "%";
+                fillElem.style.width = level + "%";
+                fillElem.style.background = level <= 20 ? "#ff3b30" : "#30d158";
+            } 
+            else {
+                /**
+                 * Cas de l'iPhone 4S en mode Web App : l'API renvoie souvent null.
+                 * On affiche "STANDBY" pour signifier que le mode est actif.
+                 */
+                textElem.innerHTML = "STANDBY";
+                fillElem.style.width = "100%";
+                fillElem.style.background = "rgba(255,255,255,0.2)";
             }
         }
 
-        // --- GESTION DU TEMPS ---
+        /**
+         * MISE À JOUR DE L'HORLOGE ET DE LA DATE
+         */
         function updateClock() {
             var now = new Date();
             var h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
 
-            if (alarmActive && h == alarmH && m == alarmM && s == 0 && !isRinging) startRinging();
+            // Vérification de l'alarme chaque seconde
+            if (alarmActive && h == alarmH && m == alarmM && s == 0 && !isRinging) {
+                startRinging();
+            }
 
+            // Affichage de l'heure
             document.getElementById('clock').innerHTML = (h<10?"0"+h:h) + ":" + (m<10?"0"+m:m);
+            
+            // Affichage de la date
             var jours = ["DIMANCHE", "LUNDI", "MARDI", "MERCREDI", "JEUDI", "VENDREDI", "SAMEDI"];
             var mois = ["JANVIER", "FÉVRIER", "MARS", "AVRIL", "MAI", "JUIN", "JUILLET", "AOÛT", "SEPTEMBRE", "OCTOBRE", "NOVEMBRE", "DÉCEMBRE"];
             document.getElementById('date').innerHTML = jours[now.getDay()] + " " + now.getDate() + " " + mois[now.getMonth()];
             
+            // Mise à jour batterie
             updateBattery();
         }
 
-        // --- NAVIGATION ET SWIPE ---
+        /**
+         * GESTION DU SWIPE (GLISSEMENT DE DOIGT)
+         */
         function handleStart(evt) {
             xDown = evt.touches ? evt.touches[0].clientX : evt.clientX;
             yDown = evt.touches ? evt.touches[0].clientY : evt.clientY;
@@ -384,41 +418,62 @@
             if (!xDown || !yDown) return;
             var xUp = evt.changedTouches ? evt.changedTouches[0].clientX : evt.clientX;
             var xDiff = xDown - xUp;
+            // Sensibilité du swipe : 40 pixels
             if (Math.abs(xDiff) > 40) {
                 if (xDiff > 0) nextPage(); else prevPage();
             }
             xDown = null; yDown = null;
         }
 
+        /**
+         * NAVIGATION ENTRE LES PAGES
+         */
         function showPage(n, dir) {
             if (n === currentPage) return;
-            var oldP = document.getElementById('p' + currentPage), newP = document.getElementById('p' + n);
+            var oldP = document.getElementById('p' + currentPage);
+            var newP = document.getElementById('p' + n);
+
+            // Animation de sortie
             oldP.className = "page " + (dir === 'next' ? 'exit-left' : 'exit-right');
+            
+            // Préparation de l'entrée sans transition pour éviter le flash
             newP.style.transition = 'none';
             newP.className = "page " + (dir === 'next' ? 'exit-right' : 'exit-left');
+            
+            // Déclenchement de l'animation d'entrée
             setTimeout(function() {
                 newP.style.transition = 'all 0.6s cubic-bezier(0.23, 1, 0.32, 1)';
                 newP.className = "page active-page";
-                for(var i=1; i<=3; i++) document.getElementById('d'+i).className = "dot" + (i==n ? " dot-active" : "");
+                // Mise à jour des points de navigation
+                for(var i=1; i<=3; i++) {
+                    document.getElementById('d'+i).className = "dot" + (i==n ? " dot-active" : "");
+                }
             }, 50);
+            
             currentPage = n;
         }
 
         function nextPage() { var n = currentPage + 1; if(n > 3) n = 1; showPage(n, 'next'); }
         function prevPage() { var n = currentPage - 1; if(n < 1) n = 3; showPage(n, 'prev'); }
 
-        // --- LOGIQUE ALARME ---
+        /**
+         * LOGIQUE DE L'ALARME
+         */
         function toggleAlarm() {
             var btn = document.getElementById('al-btn');
+            // Initialisation audio au premier clic (requis par Safari)
             if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            
             if (!alarmActive) {
                 alarmH = parseInt(document.getElementById('al-h').value);
                 alarmM = parseInt(document.getElementById('al-m').value);
                 alarmActive = true;
-                btn.innerHTML = "ACTIVÉE"; btn.className = "alarm-toggle alarm-on";
+                btn.innerHTML = "ACTIVÉE";
+                btn.className = "alarm-toggle alarm-on";
             } else {
                 alarmActive = false;
-                btn.innerHTML = "DÉSACTIVÉE"; btn.className = "alarm-toggle alarm-off";
+                btn.innerHTML = "DÉSACTIVÉE";
+                btn.className = "alarm-toggle alarm-off";
                 if(isRinging) stopAlarmNow();
             }
         }
@@ -426,49 +481,72 @@
         function startRinging() {
             isRinging = true;
             document.getElementById('stop-btn').style.display = "block";
+            // Création d'un bip sonore répété
             melodyInterval = setInterval(function() {
-                var osc = audioCtx.createOscillator(); var g = audioCtx.createGain();
-                osc.connect(g); g.connect(audioCtx.destination);
-                osc.frequency.value = 880;
+                var osc = audioCtx.createOscillator();
+                var g = audioCtx.createGain();
+                osc.connect(g);
+                g.connect(audioCtx.destination);
+                osc.frequency.value = 880; // Fréquence du bip
                 g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.8);
-                osc.start(); osc.stop(audioCtx.currentTime + 0.8);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.8);
             }, 1000);
         }
 
         function stopAlarmNow() {
-            isRinging = false; clearInterval(melodyInterval);
+            isRinging = false;
+            clearInterval(melodyInterval);
             document.getElementById('stop-btn').style.display = "none";
         }
 
-        // --- LOGIQUE MÉTÉO ---
+        /**
+         * LOGIQUE MÉTÉO (API OPEN-METEO)
+         */
         function getMeteo() {
             var xhr = new XMLHttpRequest();
+            // Coordonnées GPS (par défaut Auzeville)
             xhr.open('GET', 'https://api.open-meteo.com/v1/forecast?latitude=43.5157&longitude=1.5159&daily=temperature_2m_max,precipitation_probability_max&current_weather=true&timezone=Europe%2FParis', true);
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4 && xhr.status === 200) {
                     var data = JSON.parse(xhr.responseText);
+                    // Température actuelle
                     document.getElementById('temp-main').innerHTML = "☀️ " + Math.round(data.current_weather.temperature) + "°";
+                    // Probabilité de pluie
                     document.getElementById('precip-info').innerHTML = "PLUIE: " + data.daily.precipitation_probability_max[0] + "%";
-                    var dArr = ["DIM", "LUN", "MAR", "MER", "JEU", "VEN", "SAM"], html = "";
+                    
+                    // Prévisions sur les jours suivants
+                    var dArr = ["DIM", "LUN", "MAR", "MER", "JEU", "VEN", "SAM"];
+                    var html = "";
                     for(var i=1; i<=4; i++) {
-                        var d = new Date(); d.setDate(d.getDate() + i);
-                        html += "<div class='forecast-item'>" + dArr[d.getDay()] + "<span class='forecast-temp'>" + Math.round(data.daily.temperature_2m_max[i]) + "°</span></div>";
+                        var d = new Date();
+                        d.setDate(d.getDate() + i);
+                        html += "<div class='forecast-item'>" + dArr[d.getDay()] + 
+                                "<span class='forecast-temp'>" + Math.round(data.daily.temperature_2m_max[i]) + "°</span></div>";
                     }
                     document.getElementById('forecast-data').innerHTML = html;
                 }
-            }; xhr.send();
+            };
+            xhr.send();
         }
 
+        /**
+         * INITIALISATION AU CHARGEMENT
+         */
         window.onload = function() {
-            updateClock(); getMeteo();
+            updateClock();
+            getMeteo();
+            // Boucles de mise à jour
             setInterval(updateClock, 1000);
-            setInterval(getMeteo, 600000);
-            // Tentative de connexion à l'événement batterie
-            var bat = navigator.battery || navigator.webkitBattery;
-            if(bat) {
-                bat.addEventListener('levelchange', updateBattery);
-                bat.addEventListener('chargingchange', updateBattery);
-            }
+            setInterval(getMeteo, 600000); // Toutes les 10 minutes
+            
+            // Tentative d'écouteurs d'événements batterie (API Moderne)
+            try {
+                navigator.getBattery().then(function(bat) {
+                    bat.addEventListener('levelchange', updateBattery);
+                    bat.addEventListener('chargingchange', updateBattery);
+                });
+            } catch(e) {}
         };
     </script>
 </body>
