@@ -29,6 +29,32 @@
         #clock { font-size: 80px; line-height: 1; text-shadow: 0 4px 10px rgba(0,0,0,0.5); }
         #date { font-size: 16px; color: #a0aab4; margin-top: 10px; text-transform: uppercase; }
 
+        /* --- NOUVEAU STYLE BATTERIE APPLE --- */
+        #status-bar-custom {
+            position: fixed; top: 12px; right: 15px;
+            display: flex; align-items: center; z-index: 1000;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-weight: 600;
+        }
+        #bat-level-text { font-size: 12px; margin-right: 5px; color: #ffffff; }
+        #bat-shell {
+            width: 24px; height: 11px; border: 1px solid rgba(255,255,255,0.4);
+            border-radius: 3px; position: relative; padding: 1px;
+        }
+        #bat-shell::after {
+            content: ''; position: absolute; right: -3.5px; top: 3px;
+            width: 2px; height: 3.5px; background: rgba(255,255,255,0.4);
+            border-radius: 0 1px 1px 0;
+        }
+        #bat-fill {
+            height: 100%; background: #30d158; border-radius: 1px;
+            width: 0%; transition: width 0.5s ease;
+        }
+        .bat-low { background: #ff3b30 !important; }
+        .bat-charging { color: #30d158 !important; }
+
+        /* --- FIN STYLE BATTERIE --- */
+
         .widget-grid { width: 85%; margin: 0 auto; }
         .widget {
             background: rgba(255, 255, 255, 0.08);
@@ -69,6 +95,13 @@
     </style>
 </head>
 <body>
+
+    <div id="status-bar-custom">
+        <div id="bat-level-text">--%</div>
+        <div id="bat-shell">
+            <div id="bat-fill"></div>
+        </div>
+    </div>
 
     <button id="stop-btn" onclick="stopAlarmNow()">ARRÊTER LE SON</button>
 
@@ -129,6 +162,32 @@
             document.getElementById('clock').innerHTML = h + ":" + m;
             var jours = ["DIM", "LUN", "MAR", "MER", "JEU", "VEN", "SAM"], mois = ["JAN", "FEV", "MAR", "AVR", "MAI", "JUIN", "JUIL", "AOUT", "SEPT", "OCT", "NOV", "DEC"];
             document.getElementById('date').innerHTML = jours[now.getDay()] + " " + now.getDate() + " " + mois[now.getMonth()];
+            
+            updateBattery(); // Appel batterie
+        }
+
+        function updateBattery() {
+            var battery = navigator.battery || navigator.webkitBattery || navigator.mozBattery;
+            var textElem = document.getElementById('bat-level-text');
+            var fillElem = document.getElementById('bat-fill');
+
+            if (battery) {
+                var level = Math.round(battery.level * 100);
+                textElem.innerHTML = (battery.charging ? "⚡ " : "") + level + "%";
+                fillElem.style.width = level + "%";
+
+                if (level <= 20 && !battery.charging) {
+                    fillElem.className = "bat-low";
+                } else {
+                    fillElem.className = "";
+                }
+
+                if (battery.charging) {
+                    textElem.className = "bat-charging";
+                } else {
+                    textElem.className = "";
+                }
+            }
         }
 
         function toggleAlarm() {
@@ -159,14 +218,11 @@
             if (audioCtx.state === 'suspended') { audioCtx.resume(); }
             var osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
             osc.connect(gain); gain.connect(audioCtx.destination);
-            
-            osc.type = "triangle"; // Son plus doux
+            osc.type = "triangle";
             osc.frequency.value = freq;
-            
             gain.gain.setValueAtTime(0, audioCtx.currentTime);
             gain.gain.linearRampToValueAtTime(0.4, audioCtx.currentTime + 0.1);
             gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
-            
             osc.start(); osc.stop(audioCtx.currentTime + duration);
         }
 
@@ -174,9 +230,9 @@
             isRinging = true;
             document.getElementById('stop-btn').style.display = "block";
             melodyInterval = setInterval(function() {
-                playNote(659.25, 0.4); // Note MI
+                playNote(659.25, 0.4);
                 setTimeout(function(){ 
-                    if(isRinging) playNote(783.99, 0.4); // Note SOL
+                    if(isRinging) playNote(783.99, 0.4);
                 }, 400);
             }, 1200);
         }
