@@ -29,16 +29,15 @@
         #clock { font-size: 80px; line-height: 1; text-shadow: 0 4px 10px rgba(0,0,0,0.5); }
         #date { font-size: 16px; color: #a0aab4; margin-top: 10px; text-transform: uppercase; }
 
-        /* --- NOUVEAU STYLE BATTERIE APPLE --- */
+        /* --- STYLE BATTERIE --- */
         #status-bar-custom {
             position: fixed; top: 12px; right: 15px;
             display: flex; align-items: center; z-index: 1000;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            font-weight: 600;
+            font-family: sans-serif; font-weight: bold;
         }
-        #bat-level-text { font-size: 12px; margin-right: 5px; color: #ffffff; }
+        #bat-level-text { font-size: 12px; margin-right: 5px; color: #fff; }
         #bat-shell {
-            width: 24px; height: 11px; border: 1px solid rgba(255,255,255,0.4);
+            width: 24px; height: 11px; border: 1.5px solid rgba(255,255,255,0.4);
             border-radius: 3px; position: relative; padding: 1px;
         }
         #bat-shell::after {
@@ -52,8 +51,6 @@
         }
         .bat-low { background: #ff3b30 !important; }
         .bat-charging { color: #30d158 !important; }
-
-        /* --- FIN STYLE BATTERIE --- */
 
         .widget-grid { width: 85%; margin: 0 auto; }
         .widget {
@@ -81,26 +78,39 @@
             z-index: 2000; border: none; font-family: 'Archivo Black', sans-serif;
         }
 
+        /* --- NAVIGATION MODERNE (MODIFIÉE) --- */
         #nav-bar {
-            position: fixed; bottom: 0; width: 100%; height: 44px;
+            position: fixed; bottom: 15px; width: 100%; height: 44px;
             display: flex; justify-content: space-between; align-items: center;
-            z-index: 500; background: linear-gradient(to top, rgba(0,0,0,0.5), transparent);
+            z-index: 500; background: transparent;
         }
         .nav-arrow {
             width: 60px; height: 100%; display: flex; align-items: center; justify-content: center;
-            font-size: 24px; color: rgba(255,255,255,0.3); font-weight: bold;
+            font-size: 24px; color: rgba(255,255,255,0.15); font-weight: bold;
         }
-        .dot { display: inline-block; width: 6px; height: 6px; background: rgba(255,255,255,0.2); border-radius: 50%; margin: 0 4px; }
-        .dot-active { background: #3498db !important; }
+        #dots {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 6px 10px; border-radius: 20px;
+            display: flex; align-items: center;
+            -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px);
+        }
+        .dot { 
+            display: inline-block; width: 6px; height: 6px; 
+            background: rgba(255,255,255,0.3); border-radius: 50%; margin: 0 4px; 
+            transition: all 0.3s ease;
+        }
+        .dot-active { 
+            background: #ffffff !important; 
+            transform: scale(1.2);
+            box-shadow: 0 0 5px rgba(255,255,255,0.3);
+        }
     </style>
 </head>
 <body>
 
     <div id="status-bar-custom">
         <div id="bat-level-text">--%</div>
-        <div id="bat-shell">
-            <div id="bat-fill"></div>
-        </div>
+        <div id="bat-shell"><div id="bat-fill"></div></div>
     </div>
 
     <button id="stop-btn" onclick="stopAlarmNow()">ARRÊTER LE SON</button>
@@ -153,46 +163,28 @@
         function updateClock() {
             var now = new Date();
             var h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
-            
-            if (alarmActive && h == alarmH && m == alarmM && s == 0 && !isRinging) { 
-                startRinging(); 
-            }
-
+            if (alarmActive && h == alarmH && m == alarmM && s == 0 && !isRinging) { startRinging(); }
             if (h < 10) h = "0" + h; if (m < 10) m = "0" + m;
             document.getElementById('clock').innerHTML = h + ":" + m;
             var jours = ["DIM", "LUN", "MAR", "MER", "JEU", "VEN", "SAM"], mois = ["JAN", "FEV", "MAR", "AVR", "MAI", "JUIN", "JUIL", "AOUT", "SEPT", "OCT", "NOV", "DEC"];
             document.getElementById('date').innerHTML = jours[now.getDay()] + " " + now.getDate() + " " + mois[now.getMonth()];
-            
-            updateBattery(); // Appel batterie
+            updateBattery();
         }
 
         function updateBattery() {
             var battery = navigator.battery || navigator.webkitBattery || navigator.mozBattery;
-            var textElem = document.getElementById('bat-level-text');
-            var fillElem = document.getElementById('bat-fill');
-
             if (battery) {
                 var level = Math.round(battery.level * 100);
-                textElem.innerHTML = (battery.charging ? "⚡ " : "") + level + "%";
-                fillElem.style.width = level + "%";
-
-                if (level <= 20 && !battery.charging) {
-                    fillElem.className = "bat-low";
-                } else {
-                    fillElem.className = "";
-                }
-
-                if (battery.charging) {
-                    textElem.className = "bat-charging";
-                } else {
-                    textElem.className = "";
-                }
+                document.getElementById('bat-level-text').innerHTML = (battery.charging ? "⚡ " : "") + level + "%";
+                var fill = document.getElementById('bat-fill');
+                fill.style.width = level + "%";
+                if (level <= 20 && !battery.charging) { fill.className = "bat-low"; } else { fill.className = ""; }
+                if (battery.charging) { document.getElementById('bat-level-text').className = "bat-charging"; } else { document.getElementById('bat-level-text').className = ""; }
             }
         }
 
         function toggleAlarm() {
             var btn = document.getElementById('al-btn'), status = document.getElementById('al-status');
-            
             if (!audioCtx) {
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 var buffer = audioCtx.createBuffer(1, 1, 22050);
@@ -201,7 +193,6 @@
                 source.connect(audioCtx.destination);
                 source.start(0);
             }
-
             if (!alarmActive) {
                 alarmH = parseInt(document.getElementById('al-h').value);
                 alarmM = parseInt(document.getElementById('al-m').value);
@@ -218,8 +209,7 @@
             if (audioCtx.state === 'suspended') { audioCtx.resume(); }
             var osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
             osc.connect(gain); gain.connect(audioCtx.destination);
-            osc.type = "triangle";
-            osc.frequency.value = freq;
+            osc.type = "triangle"; osc.frequency.value = freq;
             gain.gain.setValueAtTime(0, audioCtx.currentTime);
             gain.gain.linearRampToValueAtTime(0.4, audioCtx.currentTime + 0.1);
             gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
@@ -231,9 +221,7 @@
             document.getElementById('stop-btn').style.display = "block";
             melodyInterval = setInterval(function() {
                 playNote(659.25, 0.4);
-                setTimeout(function(){ 
-                    if(isRinging) playNote(783.99, 0.4);
-                }, 400);
+                setTimeout(function(){ if(isRinging) playNote(783.99, 0.4); }, 400);
             }, 1200);
         }
 
