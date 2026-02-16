@@ -11,11 +11,11 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
     
-    <title>StandBy 4S - Liquid Glass Master</title>
+    <title>StandBy 4S - True Liquid Glass</title>
     
     <style>
         /* =====================================================================
-           SECTION 1 : RESET & ARCHITECTURE DE BASE
+           SECTION 1 : RESET STRUCTUREL
            =====================================================================
         */
         * {
@@ -24,14 +24,7 @@
             -webkit-user-select: none;
             user-select: none;
             -webkit-touch-callout: none;
-            -webkit-tap-highlight-color: transparent;
             box-sizing: border-box;
-        }
-
-        /* Nécessaire pour que les inputs de l'alarme restent utilisables */
-        input { 
-            -webkit-user-select: auto !important; 
-            user-select: auto !important; 
         }
 
         body, html {
@@ -45,7 +38,7 @@
         }
 
         /* =====================================================================
-           SECTION 2 : GESTION DU FOND (DYNAMIC AMBIANCE)
+           SECTION 2 : BACKGROUND ENGINE
            =====================================================================
         */
         #dynamic-bg {
@@ -54,18 +47,14 @@
             left: 0;
             width: 100%;
             height: 100%;
-            /* RAPPEL : Utiliser jour.jpg et nuit.jpg en 960x640 */
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            
-            /* Transition de fondu fluide entre les états */
             -webkit-transition: background-image 2.5s ease-in-out;
             transition: background-image 2.5s ease-in-out;
             z-index: -1;
         }
 
-        /* OVERLAY : Réduit à 0.25 comme demandé pour la clarté */
         #bg-overlay {
             position: absolute;
             top: 0;
@@ -77,61 +66,86 @@
         }
 
         /* =====================================================================
-           SECTION 3 : EFFET LIQUID GLASS (STYLISTIQUE)
+           SECTION 3 : TRUE LIQUID GLASS UI (iOS 26)
            =====================================================================
         */
-        #clock {
-            font-size: 82px;
-            line-height: 1;
-            letter-spacing: -2px;
+        #clock-container {
             position: relative;
-            
-            /* Dégradé simulant le reflet du verre liquide */
-            background: -webkit-linear-gradient(
-                top, 
-                #ffffff 0%, 
-                #ffffff 40%, 
-                #bcbcbc 48%, 
-                #ffffff 52%, 
-                #e8e8e8 100%
-            );
-            
-            /* Masquage pour appliquer le dégradé uniquement au texte */
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            
-            /* Ombres portées pour la profondeur et la lisibilité */
-            filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.6)) 
-                    drop-shadow(0px 0px 12px rgba(255,255,255,0.15));
-            
-            /* Animation de respiration pour le côté liquide */
-            -webkit-animation: liquidBreathing 10s infinite ease-in-out;
+            padding: 20px;
         }
 
-        @-webkit-keyframes liquidBreathing {
-            0%, 100% { -webkit-filter: brightness(1); }
-            50% { -webkit-filter: brightness(1.15); }
+        #clock {
+            font-size: 85px;
+            line-height: 1;
+            letter-spacing: -3px;
+            
+            /* EFFET LIQUIDE AVANCÉ : 
+               On crée une superposition de blancs et de gris pour simuler la vitre.
+            */
+            background: -webkit-linear-gradient(
+                top, 
+                rgba(255,255,255,1) 0%, 
+                rgba(255,255,255,1) 48%, 
+                rgba(180,180,180,1) 50%, 
+                rgba(255,255,255,1) 52%, 
+                rgba(200,200,200,1) 100%
+            );
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+
+            /* L'ombre portée simule la réfraction du verre sur le fond */
+            filter: drop-shadow(0px 8px 15px rgba(0,0,0,0.7));
+            
+            /* Ajout d'un contour "Glossy" très fin pour détacher l'heure */
+            -webkit-text-stroke: 0.5px rgba(255, 255, 255, 0.4);
+        }
+
+        /* Reflet spéculaire qui passe sur l'heure (Animation liquide) */
+        #clock::after {
+            content: attr(data-time);
+            position: absolute;
+            left: 0;
+            top: 0;
+            z-index: 2;
+            background: -webkit-linear-gradient(
+                135deg, 
+                transparent 40%, 
+                rgba(255,255,255,0.8) 50%, 
+                transparent 60%
+            );
+            background-size: 200% 100%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            -webkit-animation: shine 6s infinite linear;
+        }
+
+        @-webkit-keyframes shine {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
         }
 
         #date {
-            font-size: 16px;
-            color: #ffffff;
+            font-size: 15px;
+            color: rgba(255,255,255,0.9);
             margin-top: 15px;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            text-shadow: 0 2px 8px rgba(0,0,0,0.9);
-            opacity: 0.85;
+            letter-spacing: 3px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            /* Petit effet glassmorphism sur la date aussi */
+            background: rgba(255,255,255,0.1);
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
         }
 
         /* =====================================================================
-           SECTION 4 : PAGES ET ANIMATIONS DE NAVIGATION
+           SECTION 4 : NAVIGATION & PAGES
            =====================================================================
         */
         #wrapper {
             width: 100%;
             height: 100%;
             position: relative;
-            -webkit-perspective: 1200px;
             z-index: 10;
         }
 
@@ -143,157 +157,111 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            text-align: center;
             opacity: 0;
             visibility: hidden;
-            
-            /* Effet de zoom progressif */
-            -webkit-transform: scale(1.15);
-            -webkit-transition: all 0.7s cubic-bezier(0.23, 1, 0.32, 1);
-            pointer-events: none;
+            -webkit-transform: scale(1.1);
+            -webkit-transition: all 0.7s cubic-bezier(0.19, 1, 0.22, 1);
         }
 
         .active-page {
             opacity: 1 !important;
             visibility: visible !important;
             -webkit-transform: scale(1) !important;
-            pointer-events: auto;
         }
 
-        /* Sortie vers la gauche */
-        .exit-left {
-            -webkit-transform: scale(0.85) translateX(-130%) !important;
-            opacity: 0 !important;
-        }
-
-        /* Sortie vers la droite */
-        .exit-right {
-            -webkit-transform: scale(0.85) translateX(130%) !important;
-            opacity: 0 !important;
-        }
+        .exit-left { -webkit-transform: translateX(-100%) scale(0.9) !important; opacity: 0 !important; }
+        .exit-right { -webkit-transform: translateX(100%) scale(0.9) !important; opacity: 0 !important; }
 
         /* =====================================================================
-           SECTION 5 : DESIGN DES WIDGETS (BLUR UI)
+           SECTION 5 : WIDGETS & ALARME
            =====================================================================
         */
         .widget-box {
-            background: rgba(0, 0, 0, 0.5);
-            border-radius: 22px;
-            padding: 18px;
-            width: 88%;
-            margin-bottom: 14px;
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            -webkit-backdrop-filter: blur(12px);
-        }
-
-        .alarm-card {
-            background: rgba(0, 0, 0, 0.6);
-            padding: 28px;
-            border-radius: 28px;
-            width: 85%;
-            border: 1px solid rgba(255, 255, 255, 0.22);
-        }
-
-        .time-picker {
-            margin-bottom: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            padding: 20px;
+            width: 90%;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            -webkit-backdrop-filter: blur(15px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
 
         .time-picker input {
-            background: #151515;
-            border: 1px solid #333;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.2);
             color: #fff;
-            font-size: 32px;
-            width: 68px;
+            font-size: 35px;
+            width: 75px;
             text-align: center;
-            border-radius: 14px;
+            border-radius: 15px;
             padding: 10px;
-            font-family: 'Archivo Black', sans-serif;
+            font-family: 'Archivo Black';
         }
 
         .alarm-toggle {
-            padding: 18px 40px;
-            border-radius: 22px;
+            padding: 20px 45px;
+            border-radius: 30px;
             border: none;
             font-family: 'Archivo Black';
             font-size: 14px;
-            margin-top: 18px;
+            margin-top: 20px;
             text-transform: uppercase;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
 
-        .alarm-off { 
-            background: #2c2c2e; 
-            color: #8e8e93; 
-        }
-
-        .alarm-on { 
-            background: #34c759; 
-            color: #fff; 
-            box-shadow: 0 0 25px rgba(52, 199, 89, 0.4); 
-        }
-
-        #stop-btn {
-            display: none;
-            position: fixed;
-            bottom: 90px;
-            left: 50%;
-            -webkit-transform: translateX(-50%);
-            background: #ff3b30;
-            color: white;
-            padding: 22px 55px;
-            border-radius: 45px;
-            border: none;
-            font-family: 'Archivo Black';
-            font-size: 18px;
-            z-index: 10000;
-            box-shadow: 0 10px 30px rgba(255, 59, 48, 0.4);
-        }
+        .alarm-off { background: rgba(255,255,255,0.2); color: #fff; }
+        .alarm-on { background: #34c759; color: #fff; box-shadow: 0 0 20px rgba(52, 199, 89, 0.5); }
 
         /* =====================================================================
-           SECTION 6 : NAVIGATION BAR & DOTS INDICATORS
+           SECTION 6 : DOTS & NAV BAR
            =====================================================================
         */
         #nav-bar {
             position: fixed;
-            bottom: 20px;
+            bottom: 25px;
             width: 100%;
-            height: 44px;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            justify-content: center;
             z-index: 500;
         }
 
-        .nav-arrow {
-            width: 60px;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            color: rgba(255,255,255,0.35);
-        }
-
         #dots-wrapper {
-            background: rgba(0, 0, 0, 0.4);
-            padding: 10px 20px;
-            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 10px 25px;
+            border-radius: 30px;
             display: flex;
             gap: 15px;
-            border: 1px solid rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.1);
+            -webkit-backdrop-filter: blur(5px);
         }
 
         .dot {
-            width: 9px;
-            height: 9px;
-            background: rgba(255,255,255,0.25);
+            width: 10px;
+            height: 10px;
+            background: rgba(255,255,255,0.3);
             border-radius: 50%;
             transition: all 0.4s ease;
         }
 
         .dot-active {
             background: #fff !important;
-            width: 26px;
+            width: 30px;
             border-radius: 10px;
+        }
+        
+        #stop-btn {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #ff3b30;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 20px;
+            border: none;
+            font-family: 'Archivo Black';
+            z-index: 9999;
         }
     </style>
 </head>
@@ -301,121 +269,87 @@
 
     <div id="dynamic-bg"></div>
     <div id="bg-overlay"></div>
-
-    <button id="stop-btn" onclick="stopAlarmNow()">ARRÊTER</button>
+    
+    <button id="stop-btn" onclick="stopAlarmNow()">STOP</button>
 
     <div id="wrapper">
         
         <div class="page active-page" id="p1">
-            <div id="clock">00:00</div>
-            <div id="date">INITIALISATION...</div>
+            <div id="clock-container">
+                <div id="clock" data-time="00:00">00:00</div>
+            </div>
+            <div id="date">INITIALISATION</div>
         </div>
 
         <div class="page" id="p2">
             <div class="widget-box">
-                <span id="temp-main" style="font-size:38px">☀️ --°</span>
-                <br>
-                <span id="precip-info" style="color:#3498db; font-size:14px">HUMIDITÉ: --%</span>
+                <span id="temp-main" style="font-size:40px">☀️ --°</span>
+                <p id="precip-info" style="font-size:12px; opacity:0.7; margin-top:5px">PRECIPITATIONS : --%</p>
             </div>
-            <div class="widget-box">
-                <div id="forecast-data" style="display:flex; justify-content:space-around; margin-top:10px;">
-                    </div>
-            </div>
+            <div id="forecast-data" class="widget-box" style="display:flex; justify-content:space-around;">
+                </div>
         </div>
 
         <div class="page" id="p3">
-            <div class="alarm-card">
+            <div class="widget-box" style="background:rgba(0,0,0,0.4)">
                 <div class="time-picker">
-                    <input type="number" id="al-h" value="07"> : 
-                    <input type="number" id="al-m" value="30">
+                    <input type="number" id="al-h" value="07"> : <input type="number" id="al-m" value="30">
                 </div>
-                <button id="al-btn" class="alarm-toggle alarm-off" onclick="toggleAlarm()">DÉSACTIVÉE</button>
+                <button id="al-btn" class="alarm-toggle alarm-off" onclick="toggleAlarm()">OFF</button>
             </div>
         </div>
         
     </div>
 
     <div id="nav-bar">
-        <div class="nav-arrow" onclick="prevPage()">‹</div>
         <div id="dots-wrapper">
             <div class="dot dot-active" id="d1"></div>
             <div class="dot" id="d2"></div>
             <div class="dot" id="d3"></div>
         </div>
-        <div class="nav-arrow" onclick="nextPage()">›</div>
     </div>
 
     <script type="text/javascript">
         /* =====================================================================
-           JAVASCRIPT : STANDBY 4S MASTER CORE
+           SCRIPTS MASTER CORE
            =====================================================================
         */
-        
-        // Variables de contrôle d'état
-        var currentPage = 1;
-        var alarmH = -1;
-        var alarmM = -1;
-        var alarmActive = false;
-        var isRinging = false;
-        var audioCtx = null;
-        var melodyInterval = null;
-        
-        // Variables Swipe
-        var xDown = null; 
-        var yDown = null;
+        var currentPage = 1, alarmH = -1, alarmM = -1, alarmActive = false, isRinging = false;
+        var audioCtx = null, melodyInterval = null, xDown = null, yDown = null;
 
-        /**
-         * FONCTION : MISE À JOUR DU FOND
-         * Seuil Jour : 07h30 (450m) | Seuil Nuit : 21h00 (1260m)
-         */
         function updateBackground() {
             var now = new Date();
-            var totalMinutes = (now.getHours() * 60) + now.getMinutes();
-            
-            var isDay = (totalMinutes >= 450 && totalMinutes < 1260);
-            
+            var totalMin = (now.getHours() * 60) + now.getMinutes();
+            var isDay = (totalMin >= 450 && totalMin < 1260); // 7h30 - 21h00
             var bgElem = document.getElementById('dynamic-bg');
             var imageUrl = isDay ? "jour.jpg" : "nuit.jpg";
-            
-            // Mise à jour si changement d'état
             if (bgElem.style.backgroundImage.indexOf(imageUrl) === -1) {
                 bgElem.style.backgroundImage = "url('" + imageUrl + "')";
             }
         }
 
-        /**
-         * FONCTION : HORLOGE PRINCIPALE
-         */
         function updateClock() {
             var now = new Date();
-            var h = now.getHours();
-            var m = now.getMinutes();
-            var s = now.getSeconds();
-
-            // Check Alarme
-            if (alarmActive && h == alarmH && m == alarmM && s == 0 && !isRinging) {
-                startRinging();
-            }
-
-            // Formatage Heure
+            var h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
             var hStr = (h < 10) ? "0" + h : h;
             var mStr = (m < 10) ? "0" + m : m;
-            document.getElementById('clock').innerHTML = hStr + ":" + mStr;
+            var timeStr = hStr + ":" + mStr;
             
-            // Formatage Date
+            // Mise à jour de l'heure et du data-attribute pour le reflet
+            var clockEl = document.getElementById('clock');
+            clockEl.innerHTML = timeStr;
+            clockEl.setAttribute('data-time', timeStr);
+
+            if (alarmActive && h == alarmH && m == alarmM && s == 0 && !isRinging) startRinging();
+
             var jours = ["DIMANCHE", "LUNDI", "MARDI", "MERCREDI", "JEUDI", "VENDREDI", "SAMEDI"];
-            var mois = ["JANVIER", "FÉVRIER", "MARS", "AVRIL", "MAI", "JUIN", "JUILLET", "AOÛT", "SEPTEMBRE", "OCTOBRE", "NOVEMBRE", "DÉCEMBRE"];
+            var mois = ["JANVIER", "FEVRIER", "MARS", "AVRIL", "MAI", "JUIN", "JUILLET", "AOUT", "SEPTEMBRE", "OCTOBRE", "NOVEMBRE", "DECEMBRE"];
+            document.getElementById('date').innerHTML = jours[now.getDay()] + " " + now.getDate() + " " + mois[now.getMonth()];
             
-            var dateDisplay = jours[now.getDay()] + " " + now.getDate() + " " + mois[now.getMonth()];
-            document.getElementById('date').innerHTML = dateDisplay;
-            
-            // Sync fond à la minute pile
             if (s === 0) updateBackground();
         }
 
-        /**
-         * FONCTION : NAVIGATION (SWIPE ENGINE)
-         */
+        /* LOGIQUE DE NAVIGATION */
         function handleStart(evt) {
             xDown = evt.touches ? evt.touches[0].clientX : evt.clientX;
             yDown = evt.touches ? evt.touches[0].clientY : evt.clientY;
@@ -425,73 +359,41 @@
             if (!xDown || !yDown) return;
             var xUp = evt.changedTouches ? evt.changedTouches[0].clientX : evt.clientX;
             var xDiff = xDown - xUp;
-            
             if (Math.abs(xDiff) > 50) {
-                if (xDiff > 0) nextPage();
-                else prevPage();
+                if (xDiff > 0) movePage(1); else movePage(-1);
             }
             xDown = null; yDown = null;
         }
 
-        /**
-         * FONCTION : AFFICHAGE DES PAGES
-         */
-        function showPage(n, dir) {
-            if (n === currentPage) return;
-            
+        function movePage(dir) {
+            var next = currentPage + dir;
+            if (next < 1) next = 3; if (next > 3) next = 1;
             var oldP = document.getElementById('p' + currentPage);
-            var newP = document.getElementById('p' + n);
-
-            oldP.className = "page " + (dir === 'next' ? 'exit-left' : 'exit-right');
-            
-            newP.style.transition = 'none';
-            newP.className = "page " + (dir === 'next' ? 'exit-right' : 'exit-left');
-            
+            var newP = document.getElementById('p' + next);
+            oldP.className = "page " + (dir > 0 ? "exit-left" : "exit-right");
+            newP.style.transition = "none";
+            newP.className = "page " + (dir > 0 ? "exit-right" : "exit-left");
             setTimeout(function() {
-                newP.style.transition = 'all 0.7s cubic-bezier(0.23, 1, 0.32, 1)';
+                newP.style.transition = "all 0.7s cubic-bezier(0.19, 1, 0.22, 1)";
                 newP.className = "page active-page";
-                
-                // Refresh dots
-                for(var i = 1; i <= 3; i++) {
-                    document.getElementById('d' + i).className = "dot" + (i == n ? " dot-active" : "");
-                }
+                for(var i=1; i<=3; i++) document.getElementById('d'+i).className = "dot" + (i==next ? " dot-active" : "");
+                currentPage = next;
             }, 50);
-            
-            currentPage = n;
         }
 
-        function nextPage() { 
-            var n = currentPage + 1; 
-            if (n > 3) n = 1; 
-            showPage(n, 'next'); 
-        }
-
-        function prevPage() { 
-            var n = currentPage - 1; 
-            if (n < 1) n = 3; 
-            showPage(n, 'prev'); 
-        }
-
-        /**
-         * FONCTION : MÉTÉO CORE
-         */
+        /* METEO & ALARME */
         function getMeteo() {
             var xhr = new XMLHttpRequest();
-            var url = 'https://api.open-meteo.com/v1/forecast?latitude=43.5157&longitude=1.5159&daily=temperature_2m_max,precipitation_probability_max&current_weather=true&timezone=Europe%2FParis';
-            
-            xhr.open('GET', url, true);
+            xhr.open('GET', 'https://api.open-meteo.com/v1/forecast?latitude=43.5157&longitude=1.5159&daily=temperature_2m_max,precipitation_probability_max&current_weather=true&timezone=Europe%2FParis', true);
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4 && xhr.status === 200) {
-                    var data = JSON.parse(xhr.responseText);
-                    
-                    document.getElementById('temp-main').innerHTML = "☀️ " + Math.round(data.current_weather.temperature) + "°";
-                    document.getElementById('precip-info').innerHTML = "PLUIE: " + data.daily.precipitation_probability_max[0] + "%";
-                    
-                    var dArr = ["DIM", "LUN", "MAR", "MER", "JEU", "VEN", "SAM"];
+                    var d = JSON.parse(xhr.responseText);
+                    document.getElementById('temp-main').innerHTML = "☀️ " + Math.round(d.current_weather.temperature) + "°";
+                    document.getElementById('precip-info').innerHTML = "PRECIPITATIONS : " + d.daily.precipitation_probability_max[0] + "%";
                     var html = "";
-                    for(var i = 1; i <= 4; i++) {
-                        var d = new Date(); d.setDate(d.getDate() + i);
-                        html += "<div style='font-size:11px; color:#ccc'>" + dArr[d.getDay()] + "<br><span style='color:#fff; font-size:14px'>" + Math.round(data.daily.temperature_2m_max[i]) + "°</span></div>";
+                    for(var i=1; i<=4; i++) {
+                        var date = new Date(); date.setDate(date.getDate()+i);
+                        html += "<div>" + date.getDate() + "<br><b>" + Math.round(d.daily.temperature_2m_max[i]) + "°</b></div>";
                     }
                     document.getElementById('forecast-data').innerHTML = html;
                 }
@@ -499,56 +401,37 @@
             xhr.send();
         }
 
-        /**
-         * FONCTION : ALARME CORE
-         */
         function toggleAlarm() {
             var btn = document.getElementById('al-btn');
             if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            
             if (!alarmActive) {
                 alarmH = parseInt(document.getElementById('al-h').value);
                 alarmM = parseInt(document.getElementById('al-m').value);
-                alarmActive = true;
-                btn.innerHTML = "ACTIVÉE";
-                btn.className = "alarm-toggle alarm-on";
+                alarmActive = true; btn.innerHTML = "ACTIVÉE"; btn.className = "alarm-toggle alarm-on";
             } else {
-                alarmActive = false;
-                btn.innerHTML = "DÉSACTIVÉE";
-                btn.className = "alarm-toggle alarm-off";
-                if (isRinging) stopAlarmNow();
+                alarmActive = false; btn.innerHTML = "OFF"; btn.className = "alarm-toggle alarm-off";
+                stopAlarmNow();
             }
         }
 
         function startRinging() {
-            isRinging = true;
-            document.getElementById('stop-btn').style.display = "block";
+            isRinging = true; document.getElementById('stop-btn').style.display = "block";
             melodyInterval = setInterval(function() {
-                var osc = audioCtx.createOscillator();
-                var g = audioCtx.createGain();
-                osc.connect(g); g.connect(audioCtx.destination);
-                osc.frequency.value = 880;
-                g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.8);
-                osc.start(); osc.stop(audioCtx.currentTime + 0.8);
+                var o = audioCtx.createOscillator(); var g = audioCtx.createGain();
+                o.connect(g); g.connect(audioCtx.destination);
+                o.frequency.value = 880; g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.8);
+                o.start(); o.stop(audioCtx.currentTime + 0.8);
             }, 1000);
         }
 
         function stopAlarmNow() {
-            isRinging = false;
-            clearInterval(melodyInterval);
+            isRinging = false; clearInterval(melodyInterval);
             document.getElementById('stop-btn').style.display = "none";
         }
 
-        /**
-         * INITIALISATION
-         */
         window.onload = function() {
-            updateBackground();
-            updateClock();
-            getMeteo();
-            
-            setInterval(updateClock, 1000);
-            setInterval(getMeteo, 600000);
+            updateBackground(); updateClock(); getMeteo();
+            setInterval(updateClock, 1000); setInterval(getMeteo, 600000);
         };
     </script>
 </body>
