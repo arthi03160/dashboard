@@ -10,7 +10,7 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
     
-    <title>StandBy 4S - Final Radiant</title>
+    <title>StandBy 4S - Ultimate Radiant</title>
     
     <style>
         /* =====================================================================
@@ -35,7 +35,6 @@
             position: fixed;
         }
 
-        /* Nécessaire pour que l'utilisateur puisse cliquer sur l'alarme */
         input { 
             -webkit-user-select: auto !important; 
             user-select: auto !important; 
@@ -81,7 +80,6 @@
             color: rgba(255, 255, 255, 0.45);
             -webkit-text-stroke: 1.8px rgba(255, 255, 255, 0.85);
             
-            /* Filtre optimisé pour iPhone 4S */
             filter: drop-shadow(0px 0px 1px #fff)
                     drop-shadow(0px 0px 12px rgba(255,255,255,0.4))
                     drop-shadow(0px 8px 12px rgba(0,0,0,0.5));
@@ -108,7 +106,7 @@
         }
 
         /* =====================================================================
-           SECTION 4 : WIDGETS (FIX BUG OMBRE ANGLES DROITS)
+           SECTION 4 : WIDGETS (FIX DÉFINITIF ANGLES)
            =====================================================================
         */
         .widget-box {
@@ -117,22 +115,36 @@
             padding: 20px;
             width: 92%;
             margin-bottom: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            
+            /* ON REMPLACE LE BOX-SHADOW QUI BUG PAR UNE BORDURE OMBRÉE */
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            
+            /* Pour simuler l'ombre sans bug, on utilise un outline translucide ou rien du tout */
+            /* Le flou d'arrière-plan aide à détacher le widget sans ombre externe */
             -webkit-backdrop-filter: blur(18px);
             
-            /* FIX : On utilise overflow:hidden pour forcer l'ombre à suivre l'arrondi */
-            overflow: hidden;
-            /* On remplace box-shadow par une version plus légère pour éviter le bug Webkit */
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            /* On enlève complètement le box-shadow pour éradiquer les angles droits */
+            box-shadow: none; 
+            
             position: relative;
+            overflow: hidden;
+        }
+
+        /* Optionnel : Une très fine bordure sombre pour simuler la profondeur sans bug */
+        .widget-box::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 25px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
+            pointer-events: none;
         }
 
         /* =====================================================================
-           SECTION 5 : ALARME (REMONTÉE & FIX TACTILE)
+           SECTION 5 : ALARME (REMONTÉE & TACTILE)
            =====================================================================
         */
         #p3 {
-            /* On remonte tout le contenu de la page 3 */
             justify-content: flex-start !important;
             padding-top: 50px;
         }
@@ -145,7 +157,6 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
             -webkit-backdrop-filter: blur(20px);
             text-align: center;
-            /* Assure que les clics passent */
             pointer-events: auto; 
             z-index: 1000;
         }
@@ -169,8 +180,7 @@
             border-radius: 18px;
             padding: 10px;
             font-family: 'Archivo Black';
-            /* Fix pour iPhone 4S : force le clavier numérique */
-            appearance: none;
+            pointer-events: auto;
         }
 
         .alarm-toggle-ios {
@@ -184,10 +194,10 @@
         }
 
         .alarm-off { background: rgba(255, 255, 255, 0.15); color: #fff; }
-        .alarm-on { background: #34c759; color: #fff; box-shadow: 0 0 25px rgba(52, 199, 89, 0.5); }
+        .alarm-on { background: #34c759; color: #fff; }
 
         /* =====================================================================
-           SECTION 6 : NAVIGATION & DOTS (DESCENDUS)
+           SECTION 6 : NAVIGATION & DOTS (POSITION BASSE)
            =====================================================================
         */
         #wrapper { width: 100%; height: 100%; position: relative; z-index: 10; }
@@ -208,7 +218,7 @@
 
         #nav-bar {
             position: fixed; 
-            bottom: 15px; /* DESCENDU : Passé de 25px à 15px */
+            bottom: 12px; /* Un peu plus bas encore pour libérer l'écran */
             width: 100%;
             display: flex; justify-content: center; z-index: 500;
         }
@@ -220,7 +230,7 @@
             -webkit-backdrop-filter: blur(8px);
         }
 
-        .dot { width: 9px; height: 9px; background: rgba(255,255,255,0.3); border-radius: 50%; transition: 0.4s; }
+        .dot { width: 8px; height: 8px; background: rgba(255,255,255,0.3); border-radius: 50%; transition: 0.4s; }
         .dot-active { background: #fff; width: 28px; border-radius: 10px; }
     </style>
 </head>
@@ -292,9 +302,9 @@
             if (s === 0) updateBackground();
         }
 
-        /* SWIPE NAVIGATION */
+        /* NAVIGATION */
         function handleStart(evt) {
-            if(evt.target.tagName === 'INPUT') return;
+            if(evt.target.tagName === 'INPUT' || evt.target.tagName === 'BUTTON') return;
             xDown = evt.touches ? evt.touches[0].clientX : evt.clientX;
         }
         function handleEnd(evt) {
