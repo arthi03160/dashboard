@@ -7,15 +7,14 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-touch-fullscreen" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="icone.png">
     
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
     
-    <title>StandBy 4S - Radiant Glass</title>
+    <title>StandBy 4S - Final Radiant</title>
     
     <style>
         /* =====================================================================
-           SECTION 1 : CORE SYSTEM
+           SECTION 1 : CORE
            =====================================================================
         */
         * {
@@ -36,8 +35,15 @@
             position: fixed;
         }
 
+        /* Nécessaire pour que l'utilisateur puisse cliquer sur l'alarme */
+        input { 
+            -webkit-user-select: auto !important; 
+            user-select: auto !important; 
+            pointer-events: auto !important;
+        }
+
         /* =====================================================================
-           SECTION 2 : DYNAMIC BACKGROUND
+           SECTION 2 : BACKGROUND ENGINE
            =====================================================================
         */
         #dynamic-bg {
@@ -49,7 +55,7 @@
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            -webkit-transition: background-image 2.5s ease-in-out;
+            -webkit-transition: background-image 2s ease-in-out;
             z-index: -1;
         }
 
@@ -59,71 +65,50 @@
             left: 0;
             width: 100%;
             height: 100%;
-            /* Opacité minimale pour maximiser la luminosité du verre */
             background: rgba(0, 0, 0, 0.15);
             z-index: 0;
         }
 
         /* =====================================================================
-           SECTION 3 : RADIANT LIQUID GLASS CLOCK (iOS 26)
+           SECTION 3 : RADIANT LIQUID GLASS CLOCK
            =====================================================================
         */
-        #clock-container {
-            position: relative;
-            padding: 5px;
-        }
-
         #clock {
             font-size: 108px;
             line-height: 1;
             letter-spacing: -6px;
             position: relative;
+            color: rgba(255, 255, 255, 0.45);
+            -webkit-text-stroke: 1.8px rgba(255, 255, 255, 0.85);
             
-            /* LUMINOSITÉ ACCRUE : 
-               On passe à une opacité de 40% (au lieu de 15%) pour un aspect moins sombre.
-            */
-            color: rgba(255, 255, 255, 0.4);
+            /* Filtre optimisé pour iPhone 4S */
+            filter: drop-shadow(0px 0px 1px #fff)
+                    drop-shadow(0px 0px 12px rgba(255,255,255,0.4))
+                    drop-shadow(0px 8px 12px rgba(0,0,0,0.5));
             
-            /* CONTOUR ÉCLATANT :
-               Augmentation de l'épaisseur et de la brillance de la bordure.
-            */
-            -webkit-text-stroke: 2px rgba(255, 255, 255, 0.8);
-            
-            /* SYSTÈME DE GLOW MULTI-COUCHES :
-               1. Ombre interne blanche pour l'aspect laiteux.
-               2. Lueur externe puissante pour l'effet néon/liquide.
-               3. Ombre de fond pour garder la lisibilité sur fond clair.
-            */
-            filter: drop-shadow(0px 0px 2px rgba(255,255,255,1))
-                    drop-shadow(0px 0px 15px rgba(255,255,255,0.4))
-                    drop-shadow(0px 10px 15px rgba(0,0,0,0.4));
-            
-            -webkit-animation: radiantPulse 5s infinite ease-in-out;
+            -webkit-animation: radiant 5s infinite ease-in-out;
         }
 
-        @-webkit-keyframes radiantPulse {
-            0%, 100% { opacity: 0.95; -webkit-filter: brightness(1); }
-            50% { opacity: 1; -webkit-filter: brightness(1.2); }
+        @-webkit-keyframes radiant {
+            0%, 100% { -webkit-filter: brightness(1); }
+            50% { -webkit-filter: brightness(1.3); }
         }
 
-        /* Date style validé */
         #date {
             font-size: 14px;
-            color: #fff;
-            margin-top: 18px;
+            margin-top: 15px;
             text-transform: uppercase;
             letter-spacing: 3px;
             background: rgba(255, 255, 255, 0.18);
-            padding: 7px 22px;
+            padding: 7px 20px;
             border-radius: 25px;
             display: inline-block;
-            -webkit-backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
         /* =====================================================================
-           SECTION 4 : WIDGETS (PÉPITES CONSERVÉES)
+           SECTION 4 : WIDGETS (FIX BUG OMBRE ANGLES DROITS)
            =====================================================================
         */
         .widget-box {
@@ -131,74 +116,78 @@
             border-radius: 25px;
             padding: 20px;
             width: 92%;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             border: 1px solid rgba(255, 255, 255, 0.2);
             -webkit-backdrop-filter: blur(18px);
-            box-shadow: 0 12px 35px rgba(0,0,0,0.3);
-        }
-
-        #forecast-data div {
-            text-align: center;
-            font-size: 11px;
-            color: rgba(255,255,255,0.85);
-        }
-
-        #forecast-data b {
-            font-size: 16px;
-            display: block;
-            margin-top: 6px;
-            color: #fff;
+            
+            /* FIX : On utilise overflow:hidden pour forcer l'ombre à suivre l'arrondi */
+            overflow: hidden;
+            /* On remplace box-shadow par une version plus légère pour éviter le bug Webkit */
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            position: relative;
         }
 
         /* =====================================================================
-           SECTION 5 : ALARME UI (PÉPITE CONSERVÉE)
+           SECTION 5 : ALARME (REMONTÉE & FIX TACTILE)
            =====================================================================
         */
+        #p3 {
+            /* On remonte tout le contenu de la page 3 */
+            justify-content: flex-start !important;
+            padding-top: 50px;
+        }
+
         .alarm-glass-panel {
             background: rgba(255, 255, 255, 0.1);
             border-radius: 35px;
-            padding: 35px;
+            padding: 30px;
             width: 88%;
             border: 1px solid rgba(255, 255, 255, 0.2);
-            -webkit-backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(20px);
             text-align: center;
+            /* Assure que les clics passent */
+            pointer-events: auto; 
+            z-index: 1000;
         }
 
         .alarm-time-display {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 12px;
-            margin-bottom: 30px;
+            gap: 10px;
+            margin-bottom: 25px;
+            pointer-events: auto;
         }
 
         .alarm-time-display input {
             background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.3);
             color: #fff;
-            font-size: 45px;
-            width: 95px;
+            font-size: 42px;
+            width: 90px;
             text-align: center;
-            border-radius: 20px;
-            padding: 8px;
+            border-radius: 18px;
+            padding: 10px;
             font-family: 'Archivo Black';
+            /* Fix pour iPhone 4S : force le clavier numérique */
+            appearance: none;
         }
 
         .alarm-toggle-ios {
             width: 100%;
-            padding: 22px;
-            border-radius: 28px;
+            padding: 20px;
+            border-radius: 25px;
             border: none;
             font-family: 'Archivo Black';
-            font-size: 15px;
+            font-size: 14px;
             text-transform: uppercase;
         }
 
-        .alarm-off { background: rgba(255, 255, 255, 0.15); color: #fff; opacity: 0.6; }
-        .alarm-on { background: #34c759; color: #fff; box-shadow: 0 0 35px rgba(52, 199, 89, 0.6); }
+        .alarm-off { background: rgba(255, 255, 255, 0.15); color: #fff; }
+        .alarm-on { background: #34c759; color: #fff; box-shadow: 0 0 25px rgba(52, 199, 89, 0.5); }
 
         /* =====================================================================
-           SECTION 6 : NAVIGATION & DOTS
+           SECTION 6 : NAVIGATION & DOTS (DESCENDUS)
            =====================================================================
         */
         #wrapper { width: 100%; height: 100%; position: relative; z-index: 10; }
@@ -210,7 +199,7 @@
             justify-content: center; align-items: center;
             opacity: 0; visibility: hidden;
             -webkit-transform: scale(1.1);
-            -webkit-transition: all 0.7s cubic-bezier(0.19, 1, 0.22, 1);
+            -webkit-transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
         }
 
         .active-page { opacity: 1; visibility: visible; -webkit-transform: scale(1); }
@@ -218,25 +207,21 @@
         .exit-right { -webkit-transform: translateX(100%) scale(0.9); opacity: 0; }
 
         #nav-bar {
-            position: fixed; bottom: 25px; width: 100%;
+            position: fixed; 
+            bottom: 15px; /* DESCENDU : Passé de 25px à 15px */
+            width: 100%;
             display: flex; justify-content: center; z-index: 500;
         }
 
         #dots-wrapper {
             background: rgba(255, 255, 255, 0.15);
-            padding: 10px 25px; border-radius: 30px;
-            display: flex; gap: 15px; border: 1px solid rgba(255,255,255,0.2);
+            padding: 8px 22px; border-radius: 30px;
+            display: flex; gap: 12px; border: 1px solid rgba(255,255,255,0.2);
             -webkit-backdrop-filter: blur(8px);
         }
 
-        .dot { width: 10px; height: 10px; background: rgba(255,255,255,0.3); border-radius: 50%; transition: 0.4s; }
-        .dot-active { background: #fff; width: 32px; border-radius: 10px; }
-        
-        #stop-btn {
-            display: none; position: fixed; top: 20px; right: 20px;
-            background: #ff3b30; color: white; padding: 15px 30px;
-            border-radius: 20px; border: none; font-family: 'Archivo Black'; z-index: 9999;
-        }
+        .dot { width: 9px; height: 9px; background: rgba(255,255,255,0.3); border-radius: 50%; transition: 0.4s; }
+        .dot-active { background: #fff; width: 28px; border-radius: 10px; }
     </style>
 </head>
 <body onmousedown="handleStart(event)" onmouseup="handleEnd(event)" ontouchstart="handleStart(event)" ontouchend="handleEnd(event)">
@@ -244,21 +229,19 @@
     <div id="dynamic-bg"></div>
     <div id="bg-overlay"></div>
     
-    <button id="stop-btn" onclick="stopAlarmNow()">STOP ALARME</button>
+    <button id="stop-btn" style="display:none; position:fixed; top:20px; right:20px; z-index:10000; background:#ff3b30; color:#fff; border:none; padding:15px 25px; border-radius:20px; font-family:'Archivo Black';" onclick="stopAlarmNow()">STOP</button>
 
     <div id="wrapper">
         
         <div class="page active-page" id="p1">
-            <div id="clock-container">
-                <div id="clock">00:00</div>
-            </div>
-            <div id="date">SYNC EN COURS...</div>
+            <div id="clock">00:00</div>
+            <div id="date">-- -- ----</div>
         </div>
 
         <div class="page" id="p2">
             <div class="widget-box">
                 <span id="temp-main" style="font-size:42px">☀️ --°</span>
-                <p style="font-size:12px; opacity:0.8; margin-top:5px" id="precip-info">MÉTÉO LOCALE</p>
+                <p style="font-size:11px; opacity:0.7; margin-top:5px">MÉTÉO ACTUELLE</p>
             </div>
             <div id="forecast-data" class="widget-box" style="display:flex; justify-content:space-around;">
                 </div>
@@ -267,11 +250,11 @@
         <div class="page" id="p3">
             <div class="alarm-glass-panel">
                 <div class="alarm-time-display">
-                    <input type="number" id="al-h" value="07">
+                    <input type="number" id="al-h" value="07" pattern="\d*">
                     <span style="font-size:30px; opacity:0.4">:</span>
-                    <input type="number" id="al-m" value="30">
+                    <input type="number" id="al-m" value="30" pattern="\d*">
                 </div>
-                <button id="al-btn" class="alarm-toggle-ios alarm-off" onclick="toggleAlarm()">ACTIVER L'ALARME</button>
+                <button id="al-btn" class="alarm-toggle-ios alarm-off" onclick="toggleAlarm()">ACTIVER</button>
             </div>
         </div>
         
@@ -286,63 +269,42 @@
     </div>
 
     <script type="text/javascript">
-        /* =====================================================================
-           SCRIPTS MASTER CORE
-           =====================================================================
-        */
+        /* CORE SCRIPTS */
         var currentPage = 1, alarmH = -1, alarmM = -1, alarmActive = false, isRinging = false;
         var audioCtx = null, melodyInterval = null, xDown = null, yDown = null;
 
-        /**
-         * FOND DYNAMIQUE
-         */
         function updateBackground() {
             var now = new Date();
-            var totalMin = (now.getHours() * 60) + now.getMinutes();
-            var isDay = (totalMin >= 450 && totalMin < 1260); 
-            var bgElem = document.getElementById('dynamic-bg');
-            var imageUrl = isDay ? "jour.jpg" : "nuit.jpg";
-            if (bgElem.style.backgroundImage.indexOf(imageUrl) === -1) {
-                bgElem.style.backgroundImage = "url('" + imageUrl + "')";
-            }
+            var isDay = (now.getHours() >= 7 && (now.getHours() < 21));
+            var bg = document.getElementById('dynamic-bg');
+            var url = isDay ? "jour.jpg" : "nuit.jpg";
+            if (bg.style.backgroundImage.indexOf(url) === -1) bg.style.backgroundImage = "url('"+url+"')";
         }
 
-        /**
-         * HORLOGE & DATE
-         */
         function updateClock() {
             var now = new Date();
             var h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
-            var hStr = (h < 10) ? "0" + h : h;
-            var mStr = (m < 10) ? "0" + m : m;
-            
-            document.getElementById('clock').innerHTML = hStr + ":" + mStr;
-
+            document.getElementById('clock').innerHTML = (h<10?'0'+h:h) + ":" + (m<10?'0'+m:m);
             if (alarmActive && h == alarmH && m == alarmM && s == 0 && !isRinging) startRinging();
-
             var jours = ["DIMANCHE", "LUNDI", "MARDI", "MERCREDI", "JEUDI", "VENDREDI", "SAMEDI"];
             var mois = ["JANVIER", "FÉVRIER", "MARS", "AVRIL", "MAI", "JUIN", "JUILLET", "AOÛT", "SEPTEMBRE", "OCTOBRE", "NOVEMBRE", "DÉCEMBRE"];
             document.getElementById('date').innerHTML = jours[now.getDay()] + " " + now.getDate() + " " + mois[now.getMonth()];
-            
             if (s === 0) updateBackground();
         }
 
-        /**
-         * NAVIGATION SWIPE
-         */
+        /* SWIPE NAVIGATION */
         function handleStart(evt) {
+            if(evt.target.tagName === 'INPUT') return;
             xDown = evt.touches ? evt.touches[0].clientX : evt.clientX;
-            yDown = evt.touches ? evt.touches[0].clientY : evt.clientY;
         }
-
         function handleEnd(evt) {
-            if (!xDown || !yDown) return;
+            if(!xDown) return;
             var xUp = evt.changedTouches ? evt.changedTouches[0].clientX : evt.clientX;
             var xDiff = xDown - xUp;
             if (Math.abs(xDiff) > 50) {
                 if (xDiff > 0) movePage(1); else movePage(-1);
             }
-            xDown = null; yDown = null;
+            xDown = null;
         }
 
         function movePage(dir) {
@@ -354,16 +316,14 @@
             newP.style.transition = "none";
             newP.className = "page " + (dir > 0 ? "exit-right" : "exit-left");
             setTimeout(function() {
-                newP.style.transition = "all 0.7s cubic-bezier(0.19, 1, 0.22, 1)";
+                newP.style.transition = "all 0.6s cubic-bezier(0.19, 1, 0.22, 1)";
                 newP.className = "page active-page";
                 for(var i=1; i<=3; i++) document.getElementById('d'+i).className = "dot" + (i==next ? " dot-active" : "");
                 currentPage = next;
             }, 50);
         }
 
-        /**
-         * MÉTÉO (CORRECTED DAYS)
-         */
+        /* METEO */
         function getMeteo() {
             var xhr = new XMLHttpRequest();
             xhr.open('GET', 'https://api.open-meteo.com/v1/forecast?latitude=43.5157&longitude=1.5159&daily=temperature_2m_max&current_weather=true&timezone=Europe%2FParis', true);
@@ -371,14 +331,11 @@
                 if (xhr.readyState === 4 && xhr.status === 200) {
                     var d = JSON.parse(xhr.responseText);
                     document.getElementById('temp-main').innerHTML = "☀️ " + Math.round(d.current_weather.temperature) + "°";
-                    
                     var dNames = ["DIM", "LUN", "MAR", "MER", "JEU", "VEN", "SAM"];
                     var html = "";
                     for(var i=1; i<=4; i++) {
-                        var dateObj = new Date();
-                        dateObj.setDate(dateObj.getDate() + i);
-                        var dayName = dNames[dateObj.getDay()];
-                        html += "<div>" + dayName + "<br><b>" + Math.round(d.daily.temperature_2m_max[i]) + "°</b></div>";
+                        var dateObj = new Date(); dateObj.setDate(dateObj.getDate() + i);
+                        html += "<div>" + dNames[dateObj.getDay()] + "<br><b>" + Math.round(d.daily.temperature_2m_max[i]) + "°</b></div>";
                     }
                     document.getElementById('forecast-data').innerHTML = html;
                 }
@@ -386,22 +343,16 @@
             xhr.send();
         }
 
-        /**
-         * ALARME CORE
-         */
+        /* ALARME */
         function toggleAlarm() {
-            var btn = document.getElementById('al-btn');
             if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            var btn = document.getElementById('al-btn');
             if (!alarmActive) {
                 alarmH = parseInt(document.getElementById('al-h').value);
                 alarmM = parseInt(document.getElementById('al-m').value);
-                alarmActive = true; 
-                btn.innerHTML = "ALARME ACTIVÉE"; 
-                btn.className = "alarm-toggle-ios alarm-on";
+                alarmActive = true; btn.innerHTML = "ACTIF"; btn.className = "alarm-toggle-ios alarm-on";
             } else {
-                alarmActive = false; 
-                btn.innerHTML = "ACTIVER L'ALARME"; 
-                btn.className = "alarm-toggle-ios alarm-off";
+                alarmActive = false; btn.innerHTML = "ACTIVER"; btn.className = "alarm-toggle-ios alarm-off";
                 stopAlarmNow();
             }
         }
