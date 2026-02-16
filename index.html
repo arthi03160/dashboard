@@ -11,12 +11,11 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
     
-    <title>StandBy 4S - Master Version</title>
+    <title>StandBy 4S - Precision Time Edition</title>
     
     <style>
         /* ============================================================
-           SECTION 1 : RESET CSS & PROTECTIONS IPHONE 4S
-           Évite les sélections de texte et les bugs de zoom Safari
+           SECTION 1 : RESET & FOND DYNAMIQUE
            ============================================================
         */
         * {
@@ -29,7 +28,6 @@
             box-sizing: border-box;
         }
 
-        /* Réactivation pour les champs de saisie de l'alarme */
         input { 
             -webkit-user-select: auto !important; 
             user-select: auto !important; 
@@ -38,18 +36,41 @@
         body, html {
             width: 100%;
             height: 100%;
-            background: #000;
-            /* Dégradé profond pour simuler un écran moderne */
-            background: radial-gradient(circle at center, #1a2a3a 0%, #080a0c 70%, #000000 100%);
+            background-color: #000;
             color: #ffffff;
             font-family: 'Archivo Black', Arial, sans-serif;
             overflow: hidden;
             position: fixed;
         }
 
+        /* Le conteneur d'image de fond */
+        #dynamic-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            /* Transition lente pour un changement d'ambiance naturel */
+            -webkit-transition: background-image 2.0s ease-in-out;
+            transition: background-image 2.0s ease-in-out;
+            z-index: -1;
+        }
+
+        /* Overlay sombre pour la lisibilité du texte blanc */
+        #bg-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 0;
+        }
+
         /* ============================================================
-           SECTION 2 : SYSTÈME DE TRANSITION UBUNTU
-           Optimisé pour le GPU PowerVR de l'iPhone 4S
+           SECTION 2 : ANIMATIONS DE NAVIGATION
            ============================================================
         */
         #wrapper {
@@ -58,6 +79,7 @@
             position: relative;
             -webkit-perspective: 1000px;
             perspective: 1000px;
+            z-index: 10;
         }
 
         .page {
@@ -71,13 +93,11 @@
             text-align: center;
             opacity: 0;
             visibility: hidden;
-            /* Effet de zoom progressif */
-            -webkit-transform: scale(1.15);
-            transform: scale(1.15);
+            -webkit-transform: scale(1.1);
+            transform: scale(1.1);
             -webkit-transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
             transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
             pointer-events: none;
-            z-index: 1;
         }
 
         .active-page {
@@ -85,160 +105,106 @@
             visibility: visible !important;
             -webkit-transform: scale(1) !important;
             transform: scale(1) !important;
-            z-index: 10;
             pointer-events: auto;
         }
 
-        /* Sortie de page vers la gauche (Suivant) */
         .exit-left {
-            -webkit-transform: scale(0.6) translateX(-120%) !important;
-            transform: scale(0.6) translateX(-120%) !important;
+            -webkit-transform: scale(0.8) translateX(-120%) !important;
             opacity: 0 !important;
         }
 
-        /* Sortie de page vers la droite (Précédent) */
         .exit-right {
-            -webkit-transform: scale(0.6) translateX(120%) !important;
-            transform: scale(0.6) translateX(120%) !important;
+            -webkit-transform: scale(0.8) translateX(120%) !important;
             opacity: 0 !important;
         }
 
         /* ============================================================
-           SECTION 3 : INTERFACE (HORLOGE & STATUT)
+           SECTION 3 : UI & WIDGETS
            ============================================================
         */
         #clock {
-            font-size: 78px;
+            font-size: 82px;
             line-height: 1;
-            text-shadow: 0 8px 25px rgba(0,0,0,0.7);
+            text-shadow: 0 5px 20px rgba(0,0,0,0.9);
             letter-spacing: -2px;
         }
 
         #date {
-            font-size: 15px;
-            color: #a0aab4;
-            margin-top: 10px;
+            font-size: 16px;
+            color: #ffffff;
+            margin-top: 12px;
             text-transform: uppercase;
             letter-spacing: 2px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.7);
         }
 
-        /* Indicateur de batterie personnalisé */
-        #status-bar-custom {
-            position: fixed;
-            top: 12px;
-            right: 15px;
-            display: flex;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        #bat-level-text {
-            font-size: 10px;
-            margin-right: 6px;
-            font-family: -apple-system, sans-serif;
-            font-weight: bold;
-            color: #30d158;
-        }
-
-        #bat-shell {
-            width: 22px;
-            height: 10px;
-            border: 1.2px solid rgba(255,255,255,0.4);
-            border-radius: 3px;
-            position: relative;
-            padding: 1px;
-        }
-
-        #bat-shell::after {
-            content: '';
-            position: absolute;
-            right: -3.5px;
-            top: 2.5px;
-            width: 2px;
-            height: 3.5px;
-            background: rgba(255,255,255,0.4);
-            border-radius: 0 1px 1px 0;
-        }
-
-        #bat-fill {
-            height: 100%;
-            background: #30d158;
-            border-radius: 1px;
-            width: 100%;
-            transition: width 0.5s ease;
-        }
-
-        /* ============================================================
-           SECTION 4 : WIDGETS & ALARME
-           ============================================================
-        */
         .widget-box {
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 18px;
+            background: rgba(0, 0, 0, 0.55);
+            border-radius: 20px;
             padding: 15px;
             width: 85%;
-            margin-bottom: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
             -webkit-backdrop-filter: blur(10px);
         }
 
         .alarm-card {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 20px;
+            background: rgba(0, 0, 0, 0.65);
+            padding: 25px;
             border-radius: 25px;
             width: 85%;
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.25);
         }
 
         .time-picker input {
             background: #111;
-            border: 1px solid #333;
+            border: 1px solid #444;
             color: #fff;
-            font-size: 26px;
-            width: 55px;
+            font-size: 30px;
+            width: 60px;
             text-align: center;
-            border-radius: 10px;
-            padding: 8px;
+            border-radius: 12px;
+            padding: 5px;
             font-family: 'Archivo Black', sans-serif;
         }
 
         .alarm-toggle {
-            padding: 12px 30px;
-            border-radius: 15px;
+            padding: 15px 35px;
+            border-radius: 18px;
             border: none;
             font-family: 'Archivo Black';
-            font-size: 13px;
+            font-size: 14px;
+            margin-top: 15px;
             text-transform: uppercase;
-            margin-top: 10px;
         }
 
-        .alarm-off { background: #2c2c2e; color: #8e8e93; }
-        .alarm-on { background: #34c759; color: #fff; }
+        .alarm-off { background: #3a3a3c; color: #aeaeb2; }
+        .alarm-on { background: #34c759; color: #fff; box-shadow: 0 0 15px rgba(52, 199, 89, 0.5); }
 
         #stop-btn {
             display: none;
             position: fixed;
-            bottom: 75px;
+            bottom: 80px;
             left: 50%;
             -webkit-transform: translateX(-50%);
             transform: translateX(-50%);
             background: #ff3b30;
             color: white;
-            padding: 15px 40px;
-            border-radius: 30px;
+            padding: 18px 45px;
+            border-radius: 35px;
             border: none;
             font-family: 'Archivo Black';
-            font-size: 16px;
-            z-index: 5000;
+            font-size: 18px;
+            z-index: 9999;
         }
 
         /* ============================================================
-           SECTION 5 : NAVIGATION DOTS (FIX IPHONE 4S)
+           SECTION 4 : NAVIGATION (DOTS)
            ============================================================
         */
         #nav-bar {
             position: fixed;
-            bottom: 15px;
+            bottom: 20px;
             width: 100%;
             height: 44px;
             display: flex;
@@ -248,61 +214,56 @@
         }
 
         .nav-arrow {
-            width: 45px;
+            width: 50px;
             height: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 26px;
-            color: rgba(255,255,255,0.08);
+            font-size: 28px;
+            color: rgba(255,255,255,0.4);
         }
 
         #dots-wrapper {
-            background: rgba(255, 255, 255, 0.12);
-            padding: 6px 12px;
-            border-radius: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 8px 15px;
+            border-radius: 25px;
             display: flex;
-            align-items: center;
-            gap: 12px;
-            -webkit-backdrop-filter: blur(8px);
+            gap: 15px;
+            border: 1px solid rgba(255,255,255,0.15);
         }
 
         .dot {
-            width: 6px;
-            height: 6px;
-            background: rgba(255,255,255,0.25);
-            border-radius: 10px;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            width: 8px;
+            height: 8px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            transition: all 0.4s ease;
         }
 
         .dot-active {
-            background: #ffffff !important;
-            width: 18px;
-            box-shadow: 0 0 8px rgba(255,255,255,0.4);
+            background: #fff !important;
+            width: 22px;
+            border-radius: 10px;
         }
     </style>
 </head>
 <body onmousedown="handleStart(event)" onmouseup="handleEnd(event)" ontouchstart="handleStart(event)" ontouchend="handleEnd(event)">
 
-    <div id="status-bar-custom">
-        <div id="bat-level-text">VÉRIF...</div>
-        <div id="bat-shell">
-            <div id="bat-fill"></div>
-        </div>
-    </div>
+    <div id="dynamic-bg"></div>
+    <div id="bg-overlay"></div>
 
     <button id="stop-btn" onclick="stopAlarmNow()">ARRÊTER</button>
 
     <div id="wrapper">
         <div class="page active-page" id="p1">
             <div id="clock">00:00</div>
-            <div id="date">LUNDI 01 JANVIER</div>
+            <div id="date">...</div>
         </div>
 
         <div class="page" id="p2">
             <div class="widget-box">
-                <span id="temp-main" style="font-size:34px">☀️ --°</span><br>
-                <span id="precip-info" style="color:#3498db; font-size:13px">PLUIE: --%</span>
+                <span id="temp-main" style="font-size:38px">☀️ --°</span><br>
+                <span id="precip-info" style="color:#3498db; font-size:14px">PLUIE: --%</span>
             </div>
             <div class="widget-box">
                 <div id="forecast-data" style="display:flex; justify-content:space-around; margin-top:10px;">
@@ -338,39 +299,33 @@
         */
         
         var currentPage = 1;
-        var alarmH = -1;
-        var alarmM = -1;
-        var alarmActive = false;
-        var isRinging = false;
-        var audioCtx = null;
-        var melodyInterval = null;
+        var alarmH = -1, alarmM = -1, alarmActive = false, isRinging = false;
+        var audioCtx = null, melodyInterval = null;
         var xDown = null, yDown = null;
 
         /**
-         * FONCTION BATTERIE : Gère l'affichage selon le support iOS 9
+         * GESTION DU FOND DYNAMIQUE (JOUR : 07h30 à 21h00)
          */
-        function updateBattery() {
-            var battery = navigator.battery || navigator.webkitBattery || navigator.mozBattery || navigator.msBattery;
-            var textElem = document.getElementById('bat-level-text');
-            var fillElem = document.getElementById('bat-fill');
+        function updateBackground() {
+            var now = new Date();
+            var h = now.getHours();
+            var m = now.getMinutes();
             
-            if (battery) {
-                // Tentative de lecture du pourcentage réel
-                if (battery.level !== undefined && !isNaN(battery.level)) {
-                    var level = Math.round(battery.level * 100);
-                    textElem.innerHTML = (battery.charging ? "⚡ " : "") + level + "%";
-                    fillElem.style.width = level + "%";
-                } else {
-                    // Repli sur l'état de charge uniquement
-                    textElem.innerHTML = battery.charging ? "⚡ EN CHARGE" : "BATTERIE";
-                    fillElem.style.width = "100%";
-                }
-                textElem.style.color = battery.charging ? "#30d158" : "#ffffff";
-            } else {
-                // Cas par défaut si l'API est totalement bloquée
-                textElem.innerHTML = "STANDBY";
-                fillElem.style.width = "100%";
-                fillElem.style.opacity = "0.5";
+            // On calcule le nombre total de minutes écoulées aujourd'hui
+            var totalMinutes = (h * 60) + m;
+            
+            // 07h30 = (7 * 60) + 30 = 450 minutes
+            // 21h00 = (21 * 60) + 0  = 1260 minutes
+            var isDay = (totalMinutes >= 450 && totalMinutes < 1260);
+            
+            var bgElem = document.getElementById('dynamic-bg');
+            var imageUrl = isDay ? "jour.jpg" : "nuit.jpg";
+            
+            // On ne change le fond que si nécessaire
+            var currentBg = bgElem.style.backgroundImage;
+            if (currentBg.indexOf(imageUrl) === -1) {
+                bgElem.style.backgroundImage = "url('" + imageUrl + "')";
+                console.log("Passage en mode : " + (isDay ? "JOUR" : "NUIT"));
             }
         }
 
@@ -383,24 +338,23 @@
             var m = now.getMinutes();
             var s = now.getSeconds();
 
-            // Vérification de l'alarme
+            // Déclenchement de l'alarme
             if (alarmActive && h == alarmH && m == alarmM && s == 0 && !isRinging) {
                 startRinging();
             }
 
-            // Formatage 00:00
             document.getElementById('clock').innerHTML = (h<10?"0"+h:h) + ":" + (m<10?"0"+m:m);
             
-            // Formatage Date
             var jours = ["DIMANCHE", "LUNDI", "MARDI", "MERCREDI", "JEUDI", "VENDREDI", "SAMEDI"];
-            var mois = ["JANV.", "FÉVR.", "MARS", "AVRIL", "MAI", "JUIN", "JUIL.", "AOÛT", "SEPT.", "OCT.", "NOV.", "DÉC."];
+            var mois = ["JANVIER", "FÉVRIER", "MARS", "AVRIL", "MAI", "JUIN", "JUILLET", "AOÛT", "SEPTEMBRE", "OCTOBRE", "NOVEMBRE", "DÉCEMBRE"];
             document.getElementById('date').innerHTML = jours[now.getDay()] + " " + now.getDate() + " " + mois[now.getMonth()];
             
-            updateBattery();
+            // Vérification du fond à chaque minute (à la seconde 0)
+            if (s === 0) updateBackground();
         }
 
         /**
-         * GESTION DE LA NAVIGATION (SWIPE)
+         * GESTION DU SWIPE
          */
         function handleStart(evt) {
             xDown = evt.touches ? evt.touches[0].clientX : evt.clientX;
@@ -418,33 +372,22 @@
             xDown = null; yDown = null;
         }
 
-        /**
-         * AFFICHAGE DES PAGES AVEC ANIMATIONS
-         */
         function showPage(n, dir) {
             if (n === currentPage) return;
-            
             var oldP = document.getElementById('p' + currentPage);
             var newP = document.getElementById('p' + n);
 
-            // Animation de sortie
             oldP.className = "page " + (dir === 'next' ? 'exit-left' : 'exit-right');
-            
-            // Préparation de la nouvelle page (sans transition pour éviter le saut visuel)
             newP.style.transition = 'none';
             newP.className = "page " + (dir === 'next' ? 'exit-right' : 'exit-left');
             
-            // Lancement de l'animation d'entrée
             setTimeout(function() {
                 newP.style.transition = 'all 0.6s cubic-bezier(0.23, 1, 0.32, 1)';
                 newP.className = "page active-page";
-                
-                // Mise à jour visuelle des points de navigation
                 for(var i=1; i<=3; i++) {
                     document.getElementById('d'+i).className = "dot" + (i==n ? " dot-active" : "");
                 }
             }, 50);
-            
             currentPage = n;
         }
 
@@ -452,7 +395,7 @@
         function prevPage() { var n = currentPage - 1; if(n < 1) n = 3; showPage(n, 'prev'); }
 
         /**
-         * GESTION DE L'ALARME
+         * GESTION ALARME
          */
         function toggleAlarm() {
             var btn = document.getElementById('al-btn');
@@ -494,7 +437,7 @@
         }
 
         /**
-         * RÉCUPÉRATION MÉTÉO (API OPEN-METEO)
+         * MÉTÉO API
          */
         function getMeteo() {
             var xhr = new XMLHttpRequest();
@@ -502,18 +445,13 @@
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4 && xhr.status === 200) {
                     var data = JSON.parse(xhr.responseText);
-                    
-                    // Température Actuelle
                     document.getElementById('temp-main').innerHTML = "☀️ " + Math.round(data.current_weather.temperature) + "°";
                     document.getElementById('precip-info').innerHTML = "PLUIE: " + data.daily.precipitation_probability_max[0] + "%";
-                    
-                    // Prévisions J+1 à J+4
                     var dArr = ["DIM", "LUN", "MAR", "MER", "JEU", "VEN", "SAM"];
                     var html = "";
                     for(var i=1; i<=4; i++) {
-                        var d = new Date();
-                        d.setDate(d.getDate() + i);
-                        html += "<div style='font-size:10px; color:#888'>" + dArr[d.getDay()] + "<br><span style='color:#fff; font-size:13px'>" + Math.round(data.daily.temperature_2m_max[i]) + "°</span></div>";
+                        var d = new Date(); d.setDate(d.getDate() + i);
+                        html += "<div style='font-size:11px; color:#ddd'>" + dArr[d.getDay()] + "<br><span style='color:#fff; font-size:14px'>" + Math.round(data.daily.temperature_2m_max[i]) + "°</span></div>";
                     }
                     document.getElementById('forecast-data').innerHTML = html;
                 }
@@ -522,15 +460,15 @@
         }
 
         /**
-         * INITIALISATION GÉNÉRALE
+         * INITIALISATION
          */
         window.onload = function() {
+            updateBackground(); // Premier check immédiat du fond
             updateClock();
             getMeteo();
             
-            // Intervalles de rafraîchissement
             setInterval(updateClock, 1000);
-            setInterval(getMeteo, 600000); // 10 minutes
+            setInterval(getMeteo, 600000);
         };
     </script>
 </body>
