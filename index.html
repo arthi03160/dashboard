@@ -10,7 +10,7 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
     
-    <title>StandBy 4S - Perfect Radiant</title>
+    <title>StandBy 4S - Safari Perfect</title>
     
     <style>
         /* =====================================================================
@@ -57,17 +57,17 @@
         }
 
         /* =====================================================================
-           SECTION 3 : L'HEURE (STYLE IDENTIQUE POUR CHIFFRES ET POINTS)
+           SECTION 3 : L'HEURE (AVEC LES POINTS RONDS FORCÉS)
            =====================================================================
         */
         #clock-container {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 2px;
+            gap: 8px;
         }
 
-        .time-part, .separator {
+        .time-part {
             font-size: 108px;
             letter-spacing: -4px;
             color: rgba(255, 255, 255, 0.45);
@@ -76,10 +76,22 @@
                     drop-shadow(0px 8px 12px rgba(0,0,0,0.5));
         }
 
-        /* On ajuste la position des points pour qu'ils soient bien centrés avec l'Archivo Black */
-        .separator {
-            margin-top: -12px;
-            padding: 0 5px;
+        /* LE NOUVEAU SÉPARATEUR : DEUX RONDS CSS */
+        .separator-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px; /* Espace entre les deux points */
+            padding: 0 10px;
+            margin-top: 5px;
+        }
+
+        .dot-round {
+            width: 14px;
+            height: 14px;
+            background: rgba(255, 255, 255, 0.45); /* Même opacité que le texte */
+            border-radius: 50%; /* Force le rond parfait */
+            border: 1.5px solid rgba(255, 255, 255, 0.85); /* Même contour que le texte */
+            box-shadow: 0px 0px 10px rgba(255,255,255,0.3); /* Même lueur */
         }
 
         #date {
@@ -95,7 +107,7 @@
         }
 
         /* =====================================================================
-           SECTION 4 : WIDGETS (FIX BUG ANGLE CONSERVÉ)
+           SECTION 4 : WIDGETS (FIX ANGLES)
            =====================================================================
         */
         .widget-box {
@@ -112,7 +124,7 @@
         }
 
         /* =====================================================================
-           SECTION 5 : ALARME UI
+           SECTION 5 : ALARME
            =====================================================================
         */
         #p3 { justify-content: flex-start !important; padding-top: 40px; }
@@ -204,7 +216,10 @@
         <div class="page active-page" id="p1">
             <div id="clock-container">
                 <div id="h-display" class="time-part">00</div>
-                <div class="separator">:</div>
+                <div class="separator-container">
+                    <div class="dot-round"></div>
+                    <div class="dot-round"></div>
+                </div>
                 <div id="m-display" class="time-part">00</div>
             </div>
             <div id="date">SYNC...</div>
