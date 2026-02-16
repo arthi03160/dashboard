@@ -11,11 +11,11 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
     
-    <title>StandBy 4S - Master Framework</title>
+    <title>StandBy 4S - Liquid Glass Master</title>
     
     <style>
         /* =====================================================================
-           1. RESET ET CONFIGURATION DE BASE
+           SECTION 1 : RESET & ARCHITECTURE DE BASE
            =====================================================================
         */
         * {
@@ -28,7 +28,7 @@
             box-sizing: border-box;
         }
 
-        /* Réactivation de la sélection pour les réglages de l'alarme */
+        /* Nécessaire pour que les inputs de l'alarme restent utilisables */
         input { 
             -webkit-user-select: auto !important; 
             user-select: auto !important; 
@@ -45,7 +45,7 @@
         }
 
         /* =====================================================================
-           2. SYSTÈME DE FOND DYNAMIQUE (FIX IPHONE 4S)
+           SECTION 2 : GESTION DU FOND (DYNAMIC AMBIANCE)
            =====================================================================
         */
         #dynamic-bg {
@@ -54,22 +54,18 @@
             left: 0;
             width: 100%;
             height: 100%;
-            /* IMPORTANT : Utiliser des images de 960x640px 
-               pour ne pas saturer la RAM de l'iPhone 4S.
-            */
+            /* RAPPEL : Utiliser jour.jpg et nuit.jpg en 960x640 */
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
             
-            /* Transition de fondu entre le jour et la nuit */
-            -webkit-transition: background-image 2.0s ease-in-out;
-            transition: background-image 2.0s ease-in-out;
+            /* Transition de fondu fluide entre les états */
+            -webkit-transition: background-image 2.5s ease-in-out;
+            transition: background-image 2.5s ease-in-out;
             z-index: -1;
         }
 
-        /* OVERLAY DE CONTRASTE 
-           Réduit à 0.25 pour plus de luminosité sur tes photos.
-        */
+        /* OVERLAY : Réduit à 0.25 comme demandé pour la clarté */
         #bg-overlay {
             position: absolute;
             top: 0;
@@ -81,15 +77,61 @@
         }
 
         /* =====================================================================
-           3. STRUCTURE DES PAGES ET TRANSITIONS
+           SECTION 3 : EFFET LIQUID GLASS (STYLISTIQUE)
+           =====================================================================
+        */
+        #clock {
+            font-size: 82px;
+            line-height: 1;
+            letter-spacing: -2px;
+            position: relative;
+            
+            /* Dégradé simulant le reflet du verre liquide */
+            background: -webkit-linear-gradient(
+                top, 
+                #ffffff 0%, 
+                #ffffff 40%, 
+                #bcbcbc 48%, 
+                #ffffff 52%, 
+                #e8e8e8 100%
+            );
+            
+            /* Masquage pour appliquer le dégradé uniquement au texte */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            
+            /* Ombres portées pour la profondeur et la lisibilité */
+            filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.6)) 
+                    drop-shadow(0px 0px 12px rgba(255,255,255,0.15));
+            
+            /* Animation de respiration pour le côté liquide */
+            -webkit-animation: liquidBreathing 10s infinite ease-in-out;
+        }
+
+        @-webkit-keyframes liquidBreathing {
+            0%, 100% { -webkit-filter: brightness(1); }
+            50% { -webkit-filter: brightness(1.15); }
+        }
+
+        #date {
+            font-size: 16px;
+            color: #ffffff;
+            margin-top: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.9);
+            opacity: 0.85;
+        }
+
+        /* =====================================================================
+           SECTION 4 : PAGES ET ANIMATIONS DE NAVIGATION
            =====================================================================
         */
         #wrapper {
             width: 100%;
             height: 100%;
             position: relative;
-            -webkit-perspective: 1000px;
-            perspective: 1000px;
+            -webkit-perspective: 1200px;
             z-index: 10;
         }
 
@@ -105,13 +147,9 @@
             opacity: 0;
             visibility: hidden;
             
-            /* Effet d'échelle pour l'animation Ubuntu */
-            -webkit-transform: scale(1.1);
-            transform: scale(1.1);
-            
-            /* Courbe de transition fluide */
-            -webkit-transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            /* Effet de zoom progressif */
+            -webkit-transform: scale(1.15);
+            -webkit-transition: all 0.7s cubic-bezier(0.23, 1, 0.32, 1);
             pointer-events: none;
         }
 
@@ -119,121 +157,99 @@
             opacity: 1 !important;
             visibility: visible !important;
             -webkit-transform: scale(1) !important;
-            transform: scale(1) !important;
             pointer-events: auto;
         }
 
-        /* Animations de sortie (Slide out) */
+        /* Sortie vers la gauche */
         .exit-left {
-            -webkit-transform: scale(0.8) translateX(-120%) !important;
-            transform: scale(0.8) translateX(-120%) !important;
+            -webkit-transform: scale(0.85) translateX(-130%) !important;
             opacity: 0 !important;
         }
 
+        /* Sortie vers la droite */
         .exit-right {
-            -webkit-transform: scale(0.8) translateX(120%) !important;
-            transform: scale(0.8) translateX(120%) !important;
+            -webkit-transform: scale(0.85) translateX(130%) !important;
             opacity: 0 !important;
         }
 
         /* =====================================================================
-           4. DESIGN DES WIDGETS (OPACITÉ ET FLOU)
+           SECTION 5 : DESIGN DES WIDGETS (BLUR UI)
            =====================================================================
         */
-        #clock {
-            font-size: 82px;
-            line-height: 1;
-            /* Ombre portée forte pour contrer le fond lumineux */
-            text-shadow: 0 5px 35px rgba(0,0,0,1);
-            letter-spacing: -2px;
-        }
-
-        #date {
-            font-size: 16px;
-            color: #ffffff;
-            margin-top: 12px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            text-shadow: 0 2px 12px rgba(0,0,0,1);
-        }
-
         .widget-box {
             background: rgba(0, 0, 0, 0.5);
-            border-radius: 20px;
-            padding: 15px;
-            width: 85%;
-            margin-bottom: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            /* Effet de flou (Actif sur iOS 9) */
-            -webkit-backdrop-filter: blur(10px);
+            border-radius: 22px;
+            padding: 18px;
+            width: 88%;
+            margin-bottom: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            -webkit-backdrop-filter: blur(12px);
         }
 
         .alarm-card {
             background: rgba(0, 0, 0, 0.6);
-            padding: 25px;
-            border-radius: 25px;
+            padding: 28px;
+            border-radius: 28px;
             width: 85%;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.22);
         }
 
         .time-picker {
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
 
         .time-picker input {
-            background: #111;
-            border: 1px solid #444;
+            background: #151515;
+            border: 1px solid #333;
             color: #fff;
-            font-size: 30px;
-            width: 65px;
+            font-size: 32px;
+            width: 68px;
             text-align: center;
-            border-radius: 12px;
-            padding: 8px;
+            border-radius: 14px;
+            padding: 10px;
             font-family: 'Archivo Black', sans-serif;
         }
 
         .alarm-toggle {
-            padding: 16px 38px;
-            border-radius: 20px;
+            padding: 18px 40px;
+            border-radius: 22px;
             border: none;
             font-family: 'Archivo Black';
             font-size: 14px;
-            margin-top: 15px;
+            margin-top: 18px;
             text-transform: uppercase;
-            transition: background 0.3s;
         }
 
         .alarm-off { 
-            background: #3a3a3c; 
-            color: #aeaeb2; 
+            background: #2c2c2e; 
+            color: #8e8e93; 
         }
 
         .alarm-on { 
             background: #34c759; 
             color: #fff; 
-            box-shadow: 0 0 20px rgba(52, 199, 89, 0.5); 
+            box-shadow: 0 0 25px rgba(52, 199, 89, 0.4); 
         }
 
         #stop-btn {
             display: none;
             position: fixed;
-            bottom: 85px;
+            bottom: 90px;
             left: 50%;
             -webkit-transform: translateX(-50%);
-            transform: translateX(-50%);
             background: #ff3b30;
             color: white;
-            padding: 20px 50px;
-            border-radius: 40px;
+            padding: 22px 55px;
+            border-radius: 45px;
             border: none;
             font-family: 'Archivo Black';
             font-size: 18px;
-            z-index: 9999;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            z-index: 10000;
+            box-shadow: 0 10px 30px rgba(255, 59, 48, 0.4);
         }
 
         /* =====================================================================
-           5. BARRE DE NAVIGATION ET DOTS
+           SECTION 6 : NAVIGATION BAR & DOTS INDICATORS
            =====================================================================
         */
         #nav-bar {
@@ -248,35 +264,35 @@
         }
 
         .nav-arrow {
-            width: 55px;
+            width: 60px;
             height: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 30px;
-            color: rgba(255,255,255,0.4);
+            font-size: 32px;
+            color: rgba(255,255,255,0.35);
         }
 
         #dots-wrapper {
-            background: rgba(0, 0, 0, 0.45);
-            padding: 10px 18px;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 10px 20px;
             border-radius: 25px;
             display: flex;
             gap: 15px;
-            border: 1px solid rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.15);
         }
 
         .dot {
-            width: 8px;
-            height: 8px;
-            background: rgba(255,255,255,0.3);
+            width: 9px;
+            height: 9px;
+            background: rgba(255,255,255,0.25);
             border-radius: 50%;
             transition: all 0.4s ease;
         }
 
         .dot-active {
             background: #fff !important;
-            width: 24px;
+            width: 26px;
             border-radius: 10px;
         }
     </style>
@@ -284,7 +300,6 @@
 <body onmousedown="handleStart(event)" onmouseup="handleEnd(event)" ontouchstart="handleStart(event)" ontouchend="handleEnd(event)">
 
     <div id="dynamic-bg"></div>
-    
     <div id="bg-overlay"></div>
 
     <button id="stop-btn" onclick="stopAlarmNow()">ARRÊTER</button>
@@ -293,16 +308,15 @@
         
         <div class="page active-page" id="p1">
             <div id="clock">00:00</div>
-            <div id="date">CHARGEMENT...</div>
+            <div id="date">INITIALISATION...</div>
         </div>
 
         <div class="page" id="p2">
             <div class="widget-box">
                 <span id="temp-main" style="font-size:38px">☀️ --°</span>
                 <br>
-                <span id="precip-info" style="color:#3498db; font-size:14px">PLUIE: --%</span>
+                <span id="precip-info" style="color:#3498db; font-size:14px">HUMIDITÉ: --%</span>
             </div>
-            
             <div class="widget-box">
                 <div id="forecast-data" style="display:flex; justify-content:space-around; margin-top:10px;">
                     </div>
@@ -312,8 +326,8 @@
         <div class="page" id="p3">
             <div class="alarm-card">
                 <div class="time-picker">
-                    <input type="number" id="al-h" value="07" min="0" max="23"> : 
-                    <input type="number" id="al-m" value="30" min="0" max="59">
+                    <input type="number" id="al-h" value="07"> : 
+                    <input type="number" id="al-m" value="30">
                 </div>
                 <button id="al-btn" class="alarm-toggle alarm-off" onclick="toggleAlarm()">DÉSACTIVÉE</button>
             </div>
@@ -333,11 +347,11 @@
 
     <script type="text/javascript">
         /* =====================================================================
-           LOGIQUE JAVASCRIPT - STANDBY 4S MASTER
+           JAVASCRIPT : STANDBY 4S MASTER CORE
            =====================================================================
         */
         
-        // Variables globales de contrôle
+        // Variables de contrôle d'état
         var currentPage = 1;
         var alarmH = -1;
         var alarmM = -1;
@@ -346,39 +360,31 @@
         var audioCtx = null;
         var melodyInterval = null;
         
-        // Variables pour la gestion du Swipe
+        // Variables Swipe
         var xDown = null; 
         var yDown = null;
 
         /**
-         * GESTION DU FOND D'ÉCRAN DYNAMIQUE
-         * Bascule entre jour.jpg et nuit.jpg selon l'heure précise.
+         * FONCTION : MISE À JOUR DU FOND
+         * Seuil Jour : 07h30 (450m) | Seuil Nuit : 21h00 (1260m)
          */
         function updateBackground() {
             var now = new Date();
-            var h = now.getHours();
-            var m = now.getMinutes();
+            var totalMinutes = (now.getHours() * 60) + now.getMinutes();
             
-            // Calcul du temps total en minutes pour la précision
-            var totalMinutes = (h * 60) + m;
-            
-            // PLAGE HORAIRE : 07h30 (450 min) à 21h00 (1260 min)
             var isDay = (totalMinutes >= 450 && totalMinutes < 1260);
             
             var bgElem = document.getElementById('dynamic-bg');
             var imageUrl = isDay ? "jour.jpg" : "nuit.jpg";
             
-            // On vérifie si l'image doit changer
-            var currentBg = bgElem.style.backgroundImage;
-            if (currentBg.indexOf(imageUrl) === -1) {
+            // Mise à jour si changement d'état
+            if (bgElem.style.backgroundImage.indexOf(imageUrl) === -1) {
                 bgElem.style.backgroundImage = "url('" + imageUrl + "')";
-                console.log("Système : Passage au mode " + (isDay ? "JOUR" : "NUIT"));
             }
         }
 
         /**
-         * MISE À JOUR DE L'HEURE ET DE LA DATE
-         * S'exécute toutes les secondes.
+         * FONCTION : HORLOGE PRINCIPALE
          */
         function updateClock() {
             var now = new Date();
@@ -386,31 +392,29 @@
             var m = now.getMinutes();
             var s = now.getSeconds();
 
-            // Vérification de l'alarme (déclenchement à la seconde 0)
+            // Check Alarme
             if (alarmActive && h == alarmH && m == alarmM && s == 0 && !isRinging) {
                 startRinging();
             }
 
-            // Affichage de l'horloge
+            // Formatage Heure
             var hStr = (h < 10) ? "0" + h : h;
             var mStr = (m < 10) ? "0" + m : m;
             document.getElementById('clock').innerHTML = hStr + ":" + mStr;
             
-            // Affichage de la date en français
+            // Formatage Date
             var jours = ["DIMANCHE", "LUNDI", "MARDI", "MERCREDI", "JEUDI", "VENDREDI", "SAMEDI"];
             var mois = ["JANVIER", "FÉVRIER", "MARS", "AVRIL", "MAI", "JUIN", "JUILLET", "AOÛT", "SEPTEMBRE", "OCTOBRE", "NOVEMBRE", "DÉCEMBRE"];
             
-            var dateString = jours[now.getDay()] + " " + now.getDate() + " " + mois[now.getMonth()];
-            document.getElementById('date').innerHTML = dateString;
+            var dateDisplay = jours[now.getDay()] + " " + now.getDate() + " " + mois[now.getMonth()];
+            document.getElementById('date').innerHTML = dateDisplay;
             
-            // Rafraîchir le fond à chaque minute
-            if (s === 0) {
-                updateBackground();
-            }
+            // Sync fond à la minute pile
+            if (s === 0) updateBackground();
         }
 
         /**
-         * GESTION DU BALAYAGE TACTILE (SWIPE)
+         * FONCTION : NAVIGATION (SWIPE ENGINE)
          */
         function handleStart(evt) {
             xDown = evt.touches ? evt.touches[0].clientX : evt.clientX;
@@ -422,20 +426,15 @@
             var xUp = evt.changedTouches ? evt.changedTouches[0].clientX : evt.clientX;
             var xDiff = xDown - xUp;
             
-            // Seuil de détection de 40 pixels
-            if (Math.abs(xDiff) > 40) {
-                if (xDiff > 0) {
-                    nextPage();
-                } else {
-                    prevPage();
-                }
+            if (Math.abs(xDiff) > 50) {
+                if (xDiff > 0) nextPage();
+                else prevPage();
             }
-            xDown = null; 
-            yDown = null;
+            xDown = null; yDown = null;
         }
 
         /**
-         * NAVIGATION ENTRE LES PAGES
+         * FONCTION : AFFICHAGE DES PAGES
          */
         function showPage(n, dir) {
             if (n === currentPage) return;
@@ -443,19 +442,16 @@
             var oldP = document.getElementById('p' + currentPage);
             var newP = document.getElementById('p' + n);
 
-            // Déclenchement des classes CSS d'animation
             oldP.className = "page " + (dir === 'next' ? 'exit-left' : 'exit-right');
             
-            // Pré-positionnement de la nouvelle page sans transition
             newP.style.transition = 'none';
             newP.className = "page " + (dir === 'next' ? 'exit-right' : 'exit-left');
             
-            // Timeout pour forcer le rendu avant l'entrée fluide
             setTimeout(function() {
-                newP.style.transition = 'all 0.6s cubic-bezier(0.23, 1, 0.32, 1)';
+                newP.style.transition = 'all 0.7s cubic-bezier(0.23, 1, 0.32, 1)';
                 newP.className = "page active-page";
                 
-                // Mise à jour des indicateurs (dots)
+                // Refresh dots
                 for(var i = 1; i <= 3; i++) {
                     document.getElementById('d' + i).className = "dot" + (i == n ? " dot-active" : "");
                 }
@@ -477,15 +473,38 @@
         }
 
         /**
-         * LOGIQUE DE L'ALARME
+         * FONCTION : MÉTÉO CORE
+         */
+        function getMeteo() {
+            var xhr = new XMLHttpRequest();
+            var url = 'https://api.open-meteo.com/v1/forecast?latitude=43.5157&longitude=1.5159&daily=temperature_2m_max,precipitation_probability_max&current_weather=true&timezone=Europe%2FParis';
+            
+            xhr.open('GET', url, true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var data = JSON.parse(xhr.responseText);
+                    
+                    document.getElementById('temp-main').innerHTML = "☀️ " + Math.round(data.current_weather.temperature) + "°";
+                    document.getElementById('precip-info').innerHTML = "PLUIE: " + data.daily.precipitation_probability_max[0] + "%";
+                    
+                    var dArr = ["DIM", "LUN", "MAR", "MER", "JEU", "VEN", "SAM"];
+                    var html = "";
+                    for(var i = 1; i <= 4; i++) {
+                        var d = new Date(); d.setDate(d.getDate() + i);
+                        html += "<div style='font-size:11px; color:#ccc'>" + dArr[d.getDay()] + "<br><span style='color:#fff; font-size:14px'>" + Math.round(data.daily.temperature_2m_max[i]) + "°</span></div>";
+                    }
+                    document.getElementById('forecast-data').innerHTML = html;
+                }
+            };
+            xhr.send();
+        }
+
+        /**
+         * FONCTION : ALARME CORE
          */
         function toggleAlarm() {
             var btn = document.getElementById('al-btn');
-            
-            // Initialisation de l'AudioContext au premier clic (requis par Safari)
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             
             if (!alarmActive) {
                 alarmH = parseInt(document.getElementById('al-h').value);
@@ -504,17 +523,13 @@
         function startRinging() {
             isRinging = true;
             document.getElementById('stop-btn').style.display = "block";
-            
-            // Signal sonore cyclique
             melodyInterval = setInterval(function() {
                 var osc = audioCtx.createOscillator();
                 var g = audioCtx.createGain();
-                osc.connect(g);
-                g.connect(audioCtx.destination);
-                osc.frequency.value = 880; // Note La
+                osc.connect(g); g.connect(audioCtx.destination);
+                osc.frequency.value = 880;
                 g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.8);
-                osc.start();
-                osc.stop(audioCtx.currentTime + 0.8);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.8);
             }, 1000);
         }
 
@@ -525,53 +540,16 @@
         }
 
         /**
-         * RÉCUPÉRATION DES DONNÉES MÉTÉO (API OPEN-METEO)
-         */
-        function getMeteo() {
-            var xhr = new XMLHttpRequest();
-            // URL configurée pour ta position géographique
-            var url = 'https://api.open-meteo.com/v1/forecast?latitude=43.5157&longitude=1.5159&daily=temperature_2m_max,precipitation_probability_max&current_weather=true&timezone=Europe%2FParis';
-            
-            xhr.open('GET', url, true);
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    var data = JSON.parse(xhr.responseText);
-                    
-                    // Injection Température Actuelle
-                    document.getElementById('temp-main').innerHTML = "☀️ " + Math.round(data.current_weather.temperature) + "°";
-                    document.getElementById('precip-info').innerHTML = "PLUIE: " + data.daily.precipitation_probability_max[0] + "%";
-                    
-                    // Injection Prévisions
-                    var dArr = ["DIM", "LUN", "MAR", "MER", "JEU", "VEN", "SAM"];
-                    var html = "";
-                    for(var i = 1; i <= 4; i++) {
-                        var d = new Date();
-                        d.setDate(d.getDate() + i);
-                        var temp = Math.round(data.daily.temperature_2m_max[i]);
-                        html += "<div style='font-size:11px; color:#ddd'>" + dArr[d.getDay()] + "<br><span style='color:#fff; font-size:14px'>" + temp + "°</span></div>";
-                    }
-                    document.getElementById('forecast-data').innerHTML = html;
-                }
-            };
-            xhr.send();
-        }
-
-        /**
-         * DÉMARRAGE DE L'APPLICATION
+         * INITIALISATION
          */
         window.onload = function() {
-            // Premier check du fond et de l'heure
             updateBackground();
             updateClock();
-            
-            // Premier appel météo
             getMeteo();
             
-            // Cycles de rafraîchissement
-            setInterval(updateClock, 1000); // Horloge (1s)
-            setInterval(getMeteo, 600000);   // Météo (10 min)
+            setInterval(updateClock, 1000);
+            setInterval(getMeteo, 600000);
         };
-        
     </script>
 </body>
 </html>
