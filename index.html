@@ -10,11 +10,11 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
     
-    <title>StandBy 4S - Ultimate Radiant</title>
+    <title>StandBy 4S - Absolute Fix</title>
     
     <style>
         /* =====================================================================
-           SECTION 1 : CORE
+           SECTION 1 : RESET & CORE
            =====================================================================
         */
         * {
@@ -23,6 +23,8 @@
             -webkit-user-select: none;
             user-select: none;
             box-sizing: border-box;
+            /* Désactivation des reflets tactiles par défaut */
+            -webkit-tap-highlight-color: rgba(0,0,0,0);
         }
 
         body, html {
@@ -35,41 +37,36 @@
             position: fixed;
         }
 
+        /* Réactivation propre pour l'alarme */
         input { 
             -webkit-user-select: auto !important; 
             user-select: auto !important; 
             pointer-events: auto !important;
+            -webkit-appearance: none;
         }
 
         /* =====================================================================
-           SECTION 2 : BACKGROUND ENGINE
+           SECTION 2 : FOND DYNAMIQUE
            =====================================================================
         */
         #dynamic-bg {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             background-size: cover;
             background-position: center;
-            background-repeat: no-repeat;
             -webkit-transition: background-image 2s ease-in-out;
             z-index: -1;
         }
 
         #bg-overlay {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.15);
             z-index: 0;
         }
 
         /* =====================================================================
-           SECTION 3 : RADIANT LIQUID GLASS CLOCK
+           SECTION 3 : L'HEURE RADIANT GLASS (VALIDÉE)
            =====================================================================
         */
         #clock {
@@ -79,11 +76,9 @@
             position: relative;
             color: rgba(255, 255, 255, 0.45);
             -webkit-text-stroke: 1.8px rgba(255, 255, 255, 0.85);
-            
             filter: drop-shadow(0px 0px 1px #fff)
                     drop-shadow(0px 0px 12px rgba(255,255,255,0.4))
                     drop-shadow(0px 8px 12px rgba(0,0,0,0.5));
-            
             -webkit-animation: radiant 5s infinite ease-in-out;
         }
 
@@ -106,59 +101,59 @@
         }
 
         /* =====================================================================
-           SECTION 4 : WIDGETS (FIX DÉFINITIF ANGLES)
+           SECTION 4 : WIDGETS - LE FIX RADICAL DES COINS
            =====================================================================
         */
         .widget-box {
-            background: rgba(255, 255, 255, 0.12);
-            border-radius: 25px;
-            padding: 20px;
+            position: relative;
             width: 92%;
             margin-bottom: 12px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 25px;
             
-            /* ON REMPLACE LE BOX-SHADOW QUI BUG PAR UNE BORDURE OMBRÉE */
-            border: 1px solid rgba(255, 255, 255, 0.25);
+            /* 1. ON SUPPRIME TOUTE OMBRE EXTERNE ET INTERNE */
+            box-shadow: none !important;
             
-            /* Pour simuler l'ombre sans bug, on utilise un outline translucide ou rien du tout */
-            /* Le flou d'arrière-plan aide à détacher le widget sans ombre externe */
-            -webkit-backdrop-filter: blur(18px);
-            
-            /* On enlève complètement le box-shadow pour éradiquer les angles droits */
-            box-shadow: none; 
-            
-            position: relative;
+            /* 2. ON FORCE LE DÉCOUPAGE PHYSIQUE DU WIDGET (WebKit Fix) */
+            -webkit-mask-image: -webkit-radial-gradient(white, black); 
             overflow: hidden;
+
+            /* 3. BORDURE UNIQUE POUR LE RELIEF */
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            -webkit-backdrop-filter: blur(18px);
         }
 
-        /* Optionnel : Une très fine bordure sombre pour simuler la profondeur sans bug */
-        .widget-box::after {
+        /* Ajout d'une lueur subtile via une bordure invisible */
+        .widget-box::before {
             content: "";
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
             border-radius: 25px;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.1);
             pointer-events: none;
         }
 
         /* =====================================================================
-           SECTION 5 : ALARME (REMONTÉE & TACTILE)
+           SECTION 5 : ALARME (POSITION & TACTILE)
            =====================================================================
         */
         #p3 {
             justify-content: flex-start !important;
-            padding-top: 50px;
+            padding-top: 45px;
         }
 
         .alarm-glass-panel {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.12);
             border-radius: 35px;
             padding: 30px;
             width: 88%;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.25);
             -webkit-backdrop-filter: blur(20px);
+            -webkit-mask-image: -webkit-radial-gradient(white, black);
             text-align: center;
-            pointer-events: auto; 
-            z-index: 1000;
+            pointer-events: auto;
+            z-index: 999;
         }
 
         .alarm-time-display {
@@ -167,20 +162,19 @@
             align-items: center;
             gap: 10px;
             margin-bottom: 25px;
-            pointer-events: auto;
         }
 
         .alarm-time-display input {
             background: rgba(255, 255, 255, 0.15);
             border: 2px solid rgba(255, 255, 255, 0.3);
             color: #fff;
-            font-size: 42px;
-            width: 90px;
+            font-size: 45px;
+            width: 95px;
             text-align: center;
             border-radius: 18px;
             padding: 10px;
             font-family: 'Archivo Black';
-            pointer-events: auto;
+            pointer-events: auto !important;
         }
 
         .alarm-toggle-ios {
@@ -191,34 +185,19 @@
             font-family: 'Archivo Black';
             font-size: 14px;
             text-transform: uppercase;
+            pointer-events: auto;
         }
 
         .alarm-off { background: rgba(255, 255, 255, 0.15); color: #fff; }
         .alarm-on { background: #34c759; color: #fff; }
 
         /* =====================================================================
-           SECTION 6 : NAVIGATION & DOTS (POSITION BASSE)
+           SECTION 6 : NAVIGATION & DOTS (PLUS BAS)
            =====================================================================
         */
-        #wrapper { width: 100%; height: 100%; position: relative; z-index: 10; }
-
-        .page {
-            position: absolute;
-            width: 100%; height: 100%;
-            display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
-            opacity: 0; visibility: hidden;
-            -webkit-transform: scale(1.1);
-            -webkit-transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
-        }
-
-        .active-page { opacity: 1; visibility: visible; -webkit-transform: scale(1); }
-        .exit-left { -webkit-transform: translateX(-100%) scale(0.9); opacity: 0; }
-        .exit-right { -webkit-transform: translateX(100%) scale(0.9); opacity: 0; }
-
         #nav-bar {
             position: fixed; 
-            bottom: 12px; /* Un peu plus bas encore pour libérer l'écran */
+            bottom: 10px; /* Position minimale pour l'iPhone 4S */
             width: 100%;
             display: flex; justify-content: center; z-index: 500;
         }
@@ -232,6 +211,19 @@
 
         .dot { width: 8px; height: 8px; background: rgba(255,255,255,0.3); border-radius: 50%; transition: 0.4s; }
         .dot-active { background: #fff; width: 28px; border-radius: 10px; }
+
+        .page {
+            position: absolute;
+            width: 100%; height: 100%;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            opacity: 0; visibility: hidden;
+            -webkit-transform: scale(1.1);
+            -webkit-transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        .active-page { opacity: 1; visibility: visible; -webkit-transform: scale(1); }
+        .exit-left { -webkit-transform: translateX(-100%) scale(0.9); opacity: 0; }
+        .exit-right { -webkit-transform: translateX(100%) scale(0.9); opacity: 0; }
     </style>
 </head>
 <body onmousedown="handleStart(event)" onmouseup="handleEnd(event)" ontouchstart="handleStart(event)" ontouchend="handleEnd(event)">
@@ -242,7 +234,6 @@
     <button id="stop-btn" style="display:none; position:fixed; top:20px; right:20px; z-index:10000; background:#ff3b30; color:#fff; border:none; padding:15px 25px; border-radius:20px; font-family:'Archivo Black';" onclick="stopAlarmNow()">STOP</button>
 
     <div id="wrapper">
-        
         <div class="page active-page" id="p1">
             <div id="clock">00:00</div>
             <div id="date">-- -- ----</div>
@@ -251,10 +242,9 @@
         <div class="page" id="p2">
             <div class="widget-box">
                 <span id="temp-main" style="font-size:42px">☀️ --°</span>
-                <p style="font-size:11px; opacity:0.7; margin-top:5px">MÉTÉO ACTUELLE</p>
+                <p style="font-size:11px; opacity:0.8; margin-top:5px">MÉTÉO ACTUELLE</p>
             </div>
-            <div id="forecast-data" class="widget-box" style="display:flex; justify-content:space-around;">
-                </div>
+            <div id="forecast-data" class="widget-box" style="display:flex; justify-content:space-around;"></div>
         </div>
 
         <div class="page" id="p3">
@@ -267,7 +257,6 @@
                 <button id="al-btn" class="alarm-toggle-ios alarm-off" onclick="toggleAlarm()">ACTIVER</button>
             </div>
         </div>
-        
     </div>
 
     <div id="nav-bar">
@@ -279,7 +268,6 @@
     </div>
 
     <script type="text/javascript">
-        /* CORE SCRIPTS */
         var currentPage = 1, alarmH = -1, alarmM = -1, alarmActive = false, isRinging = false;
         var audioCtx = null, melodyInterval = null, xDown = null, yDown = null;
 
@@ -302,7 +290,6 @@
             if (s === 0) updateBackground();
         }
 
-        /* NAVIGATION */
         function handleStart(evt) {
             if(evt.target.tagName === 'INPUT' || evt.target.tagName === 'BUTTON') return;
             xDown = evt.touches ? evt.touches[0].clientX : evt.clientX;
@@ -333,7 +320,6 @@
             }, 50);
         }
 
-        /* METEO */
         function getMeteo() {
             var xhr = new XMLHttpRequest();
             xhr.open('GET', 'https://api.open-meteo.com/v1/forecast?latitude=43.5157&longitude=1.5159&daily=temperature_2m_max&current_weather=true&timezone=Europe%2FParis', true);
@@ -353,7 +339,6 @@
             xhr.send();
         }
 
-        /* ALARME */
         function toggleAlarm() {
             if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             var btn = document.getElementById('al-btn');
