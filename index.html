@@ -7,19 +7,34 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="icone.png">
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
-    <title>StandBy 4S Final</title>
+    <title>StandBy 4S Ultra</title>
     <style>
+        /* BLOCAGE DU SURLIGNAGE ET DES MENUS */
+        * {
+            -webkit-user-select: none;  /* Safari/Chrome */
+            -moz-user-select: none;     /* Firefox */
+            -ms-user-select: none;      /* IE/Edge */
+            user-select: none;          /* Standard */
+            -webkit-touch-callout: none; /* Bloque le menu contextuel sur iPhone */
+        }
+
+        /* Autorise la saisie seulement dans les champs de l'alarme */
+        input {
+            -webkit-user-select: auto !important;
+            user-select: auto !important;
+        }
+
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
             background: #050505;
             background: radial-gradient(circle at center, #1a2a3a 0%, #0d1217 70%, #050505 100%);
             color: #ffffff; font-family: 'Archivo Black', Arial, sans-serif; 
             overflow: hidden;
-            /* Empêche le rebond élastique de Safari sur iOS */
             position: fixed; 
         }
         
-        #wrapper { width: 100%; height: 100%; position: relative; }
+        #wrapper { width: 100%; height: 100%; position: relative; cursor: grab; }
+        #wrapper:active { cursor: grabbing; }
         
         .page { 
             position: absolute; width: 100%; height: 100%; 
@@ -31,7 +46,7 @@
         #clock { font-size: 80px; line-height: 1; text-shadow: 0 4px 10px rgba(0,0,0,0.5); }
         #date { font-size: 16px; color: #a0aab4; margin-top: 10px; text-transform: uppercase; }
 
-        /* --- STYLE BATTERIE --- */
+        /* --- BATTERIE --- */
         #status-bar-custom {
             position: fixed; top: 12px; right: 15px;
             display: flex; align-items: center; z-index: 1000;
@@ -80,7 +95,7 @@
             z-index: 2000; border: none; font-family: 'Archivo Black', sans-serif;
         }
 
-        /* --- NAVIGATION MODERNE AVEC DOTS ÉTIRÉS --- */
+        /* --- NAVIGATION --- */
         #nav-bar {
             position: fixed; bottom: 15px; width: 100%; height: 44px;
             display: flex; justify-content: space-between; align-items: center;
@@ -108,7 +123,7 @@
         }
     </style>
 </head>
-<body ontouchstart="handleTouchStart(event)" ontouchend="handleTouchEnd(event)">
+<body onmousedown="handleStart(event)" onmouseup="handleEnd(event)" ontouchstart="handleStart(event)" ontouchend="handleEnd(event)">
 
     <div id="status-bar-custom">
         <div id="bat-level-text">--%</div>
@@ -162,9 +177,7 @@
         var currentPage = 1, alarmH = -1, alarmM = -1, alarmActive = false, isRinging = false;
         var audioCtx = null, melodyInterval = null;
         
-        // Variables pour le SWIPE
-        var xDown = null;                                                        
-        var yDown = null;
+        var xDown = null, yDown = null;
 
         function updateClock() {
             var now = new Date();
@@ -189,35 +202,24 @@
             }
         }
 
-        // --- GESTION DU SWIPE ---
-        function handleTouchStart(evt) {
-            xDown = evt.touches[0].clientX;                                      
-            yDown = evt.touches[0].clientY;                                      
-        };                                                
+        // --- GESTION SWIPE SOURIS + TOUCH ---
+        function handleStart(evt) {
+            xDown = evt.touches ? evt.touches[0].clientX : evt.clientX;                                      
+            yDown = evt.touches ? evt.touches[0].clientY : evt.clientY;                                      
+        }                                                
 
-        function handleTouchEnd(evt) {
-            if ( ! xDown || ! yDown ) return;
+        function handleEnd(evt) {
+            if (!xDown || !yDown) return;
+            var xUp = evt.changedTouches ? evt.changedTouches[0].clientX : evt.clientX;                                    
+            var yUp = evt.changedTouches ? evt.changedTouches[0].clientY : evt.clientY;
+            var xDiff = xDown - xUp, yDiff = yDown - yUp;
 
-            var xUp = evt.changedTouches[0].clientX;                                    
-            var yUp = evt.changedTouches[0].clientY;
-
-            var xDiff = xDown - xUp;
-            var yDiff = yDown - yUp;
-
-            // On vérifie si le mouvement horizontal est plus important que le vertical
-            if ( Math.abs( xDiff ) > Math.abs( yDiff ) ) {
-                if ( xDiff > 50 ) {
-                    /* swipe gauche -> page suivante */
-                    nextPage();
-                } else if (xDiff < -50) {
-                    /* swipe droite -> page précédente */
-                    prevPage();
-                }                       
+            if (Math.abs(xDiff) > Math.abs(yDiff)) {
+                if (xDiff > 40) nextPage();
+                else if (xDiff < -40) prevPage();
             }
-            /* reset values */
-            xDown = null;
-            yDown = null;                                             
-        };
+            xDown = null; yDown = null;                                             
+        }
 
         function toggleAlarm() {
             var btn = document.getElementById('al-btn'), status = document.getElementById('al-status');
